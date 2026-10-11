@@ -179,6 +179,7 @@ class TestHttpClient(unittest.TestCase):
     def test_server_error_500(self) -> None:
         client = HttpClient()
         with patch.object(client._default_opener, "open") as mock_open:
+            import io
             import urllib.error
 
             mock_open.side_effect = urllib.error.HTTPError(
@@ -186,7 +187,7 @@ class TestHttpClient(unittest.TestCase):
                 code=500,
                 msg="Server Error",
                 hdrs={},
-                fp=None,
+                fp=io.BytesIO(b""),
             )
             with self.assertRaises(HttpError) as ctx:
                 client.get("https://example.com/error")

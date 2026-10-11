@@ -54,6 +54,15 @@ class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
         return fp
 
 
+def _safe_close(err: Any) -> None:
+    """Safely close response or error without raising on mocked or uninitialized fp (Python 3.9 compat)."""
+    try:
+        if hasattr(err, "close"):
+            err.close()
+    except Exception:
+        pass
+
+
 class HttpClient:
     """Production-grade stdlib HTTP client with deterministic fast-fail and redirect protection."""
 
@@ -116,7 +125,7 @@ class HttpClient:
         except urllib.error.HTTPError as e:
             headers_dict = {k: v for k, v in e.headers.items()} if e.headers else {}
             code = e.code
-            e.close()
+            _safe_close(e)
             if 400 <= code < 500:
                 raise HttpFastFailError(
                     status_code=code,
@@ -152,7 +161,7 @@ class HttpClient:
                 return code, location
         except urllib.error.HTTPError as e:
             code = e.code
-            e.close()
+            _safe_close(e)
             if 400 <= code < 500:
                 raise HttpFastFailError(
                     status_code=code,
@@ -198,7 +207,7 @@ class HttpClient:
         except urllib.error.HTTPError as e:
             headers_dict = {k: v for k, v in e.headers.items()} if e.headers else {}
             code = e.code
-            e.close()
+            _safe_close(e)
             if 400 <= code < 500:
                 raise HttpFastFailError(
                     status_code=code,
