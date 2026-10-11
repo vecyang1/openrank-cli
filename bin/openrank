@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+"""OpenTheRank CLI standalone executable."""
+from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+
+# When invoked directly from the source repository checkout, ensure
+# the parent repository root is added to sys.path ahead of any installed packages.
+_repo_root = Path(__file__).resolve().parent.parent
+if (_repo_root / "openrank" / "__init__.py").is_file():
+    _repo_root_str = str(_repo_root)
+    if _repo_root_str not in sys.path:
+        sys.path.insert(0, _repo_root_str)
+
+from openrank.cli import main
+
+if __name__ == "__main__":
+    sys.exit(main())

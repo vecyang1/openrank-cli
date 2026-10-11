@@ -1,0 +1,1652 @@
+[
+  {
+    "n": "Cheapest AI Subscriptions by Country",
+    "h": "/ai-pricing/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Cheapest Streaming Subscriptions by Country",
+    "h": "/streaming-pricing/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Cheapest Photo & Video App Subscriptions by Country",
+    "h": "/photo-video-pricing/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Cheapest Productivity Subscriptions by Country",
+    "h": "/productivity-pricing/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Cheapest Education Subscriptions by Country",
+    "h": "/education-pricing/",
+    "c": "Education"
+  },
+  {
+    "n": "Cheapest Social & Dating Subscriptions by Country",
+    "h": "/social-pricing/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Cheapest Apple Hardware by Country",
+    "h": "/apple-pricing/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Cheapest App Store Game Prices by Country",
+    "h": "/mobile-game-pricing/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Cheapest Steam Games by Country",
+    "h": "/steam-pricing/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Cheapest Nintendo eShop Games by Country",
+    "h": "/eshop-pricing/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "ChatGPT",
+    "h": "/ai-pricing/chatgpt/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Claude",
+    "h": "/ai-pricing/claude/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Gemini",
+    "h": "/ai-pricing/gemini/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Grok",
+    "h": "/ai-pricing/grok/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "GLM",
+    "h": "/ai-pricing/glm/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Leonardo AI",
+    "h": "/ai-pricing/leonardo-ai/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Character AI",
+    "h": "/ai-pricing/character-ai/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Perplexity",
+    "h": "/ai-pricing/perplexity/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Microsoft Copilot",
+    "h": "/ai-pricing/copilot/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Manus",
+    "h": "/ai-pricing/manus/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Kimi",
+    "h": "/ai-pricing/kimi/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Poe",
+    "h": "/ai-pricing/poe/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Kling AI",
+    "h": "/ai-pricing/kling-ai/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Dreamina",
+    "h": "/ai-pricing/dreamina/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "RunwayML",
+    "h": "/ai-pricing/runwayml/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Captions",
+    "h": "/ai-pricing/captions/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Pollo AI",
+    "h": "/ai-pricing/pollo-ai/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "HeyGen",
+    "h": "/ai-pricing/heygen/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "invideo AI",
+    "h": "/ai-pricing/invideo/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Suno",
+    "h": "/ai-pricing/suno/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Cursor",
+    "h": "/ai-pricing/cursor/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "GitHub Copilot",
+    "h": "/ai-pricing/github-copilot/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Replit",
+    "h": "/ai-pricing/replit/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Lovable",
+    "h": "/ai-pricing/lovable/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Base44",
+    "h": "/ai-pricing/base44/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Netflix",
+    "h": "/streaming-pricing/netflix/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Spotify",
+    "h": "/streaming-pricing/spotify/",
+    "c": "Streaming"
+  },
+  {
+    "n": "YouTube",
+    "h": "/streaming-pricing/youtube/",
+    "c": "Streaming"
+  },
+  {
+    "n": "HBO Max",
+    "h": "/streaming-pricing/hbo-max/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Disney+",
+    "h": "/streaming-pricing/disney-plus/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Crunchyroll",
+    "h": "/streaming-pricing/crunchyroll/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Deezer",
+    "h": "/streaming-pricing/deezer/",
+    "c": "Streaming"
+  },
+  {
+    "n": "F1 TV",
+    "h": "/streaming-pricing/f1-tv/",
+    "c": "Streaming"
+  },
+  {
+    "n": "SoundCloud",
+    "h": "/streaming-pricing/soundcloud/",
+    "c": "Streaming"
+  },
+  {
+    "n": "DramaBox",
+    "h": "/streaming-pricing/dramabox/",
+    "c": "Streaming"
+  },
+  {
+    "n": "ReelShort",
+    "h": "/streaming-pricing/reelshort/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Viki",
+    "h": "/streaming-pricing/viki/",
+    "c": "Streaming"
+  },
+  {
+    "n": "MUBI",
+    "h": "/streaming-pricing/mubi/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Anghami",
+    "h": "/streaming-pricing/anghami/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Boomplay",
+    "h": "/streaming-pricing/boomplay/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Podimo",
+    "h": "/streaming-pricing/podimo/",
+    "c": "Streaming"
+  },
+  {
+    "n": "GoodShort",
+    "h": "/streaming-pricing/goodshort/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Apple Music",
+    "h": "/streaming-pricing/apple-music/",
+    "c": "Streaming"
+  },
+  {
+    "n": "TIDAL",
+    "h": "/streaming-pricing/tidal/",
+    "c": "Streaming"
+  },
+  {
+    "n": "Canva",
+    "h": "/photo-video-pricing/canva/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "CapCut",
+    "h": "/photo-video-pricing/capcut/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Picsart",
+    "h": "/photo-video-pricing/picsart/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Adobe Photoshop",
+    "h": "/photo-video-pricing/adobe-photoshop/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Adobe Lightroom",
+    "h": "/photo-video-pricing/adobe-lightroom/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Adobe Express",
+    "h": "/photo-video-pricing/adobe-express/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Adobe Premiere",
+    "h": "/photo-video-pricing/adobe-premiere/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Figma",
+    "h": "/photo-video-pricing/figma/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Photoroom",
+    "h": "/photo-video-pricing/photoroom/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Bazaart",
+    "h": "/photo-video-pricing/bazaart/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "VSCO",
+    "h": "/photo-video-pricing/vsco/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Meitu",
+    "h": "/photo-video-pricing/meitu/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "BeautyPlus",
+    "h": "/photo-video-pricing/beautyplus/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "FaceApp",
+    "h": "/photo-video-pricing/faceapp/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Remini",
+    "h": "/photo-video-pricing/remini/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "ibis Paint X",
+    "h": "/photo-video-pricing/ibis-paint-x/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "SCRL",
+    "h": "/photo-video-pricing/scrl/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Dazz Cam",
+    "h": "/photo-video-pricing/dazz-cam/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Darkroom",
+    "h": "/photo-video-pricing/darkroom/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Prequel",
+    "h": "/photo-video-pricing/prequel/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Mojo",
+    "h": "/photo-video-pricing/mojo/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "Filmora",
+    "h": "/photo-video-pricing/filmora/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "PowerDirector",
+    "h": "/photo-video-pricing/powerdirector/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "KineMaster",
+    "h": "/photo-video-pricing/kinemaster/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "InShot",
+    "h": "/photo-video-pricing/inshot/",
+    "c": "Photo & Video"
+  },
+  {
+    "n": "X",
+    "h": "/social-pricing/x/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Telegram",
+    "h": "/social-pricing/telegram/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Tinder",
+    "h": "/social-pricing/tinder/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "LinkedIn",
+    "h": "/social-pricing/linkedin/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Reddit",
+    "h": "/social-pricing/reddit/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Discord",
+    "h": "/social-pricing/discord/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Snapchat",
+    "h": "/social-pricing/snapchat/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Instagram",
+    "h": "/social-pricing/instagram/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Hinge",
+    "h": "/social-pricing/hinge/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Bumble",
+    "h": "/social-pricing/bumble/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Grindr",
+    "h": "/social-pricing/grindr/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "HER",
+    "h": "/social-pricing/her/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "Raya",
+    "h": "/social-pricing/raya/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "HelloTalk",
+    "h": "/social-pricing/hellotalk/",
+    "c": "Social & Dating"
+  },
+  {
+    "n": "iCloud+",
+    "h": "/productivity-pricing/icloud/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Notion",
+    "h": "/productivity-pricing/notion/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Goodnotes",
+    "h": "/productivity-pricing/goodnotes/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Notability",
+    "h": "/productivity-pricing/notability/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Craft",
+    "h": "/productivity-pricing/craft/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Xmind",
+    "h": "/productivity-pricing/xmind/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Zoom",
+    "h": "/productivity-pricing/zoom/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Otter",
+    "h": "/productivity-pricing/otter/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Speechify",
+    "h": "/productivity-pricing/speechify/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Dropbox",
+    "h": "/productivity-pricing/dropbox/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Google One",
+    "h": "/productivity-pricing/google-one/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Microsoft Word",
+    "h": "/productivity-pricing/microsoft-word/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Microsoft Excel",
+    "h": "/productivity-pricing/microsoft-excel/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Microsoft PowerPoint",
+    "h": "/productivity-pricing/microsoft-powerpoint/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Microsoft OneDrive",
+    "h": "/productivity-pricing/microsoft-onedrive/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Acrobat Reader",
+    "h": "/productivity-pricing/acrobat-reader/",
+    "c": "Productivity"
+  },
+  {
+    "n": "PDF Expert",
+    "h": "/productivity-pricing/pdf-expert/",
+    "c": "Productivity"
+  },
+  {
+    "n": "WPS Office",
+    "h": "/productivity-pricing/wps-office/",
+    "c": "Productivity"
+  },
+  {
+    "n": "DeepL",
+    "h": "/productivity-pricing/deepl/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Grammarly",
+    "h": "/productivity-pricing/grammarly/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Todoist",
+    "h": "/productivity-pricing/todoist/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Structured",
+    "h": "/productivity-pricing/structured/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Opal",
+    "h": "/productivity-pricing/opal/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Proton Mail",
+    "h": "/productivity-pricing/proton-mail/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Endel",
+    "h": "/productivity-pricing/endel/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Evernote",
+    "h": "/productivity-pricing/evernote/",
+    "c": "Productivity"
+  },
+  {
+    "n": "1Password",
+    "h": "/productivity-pricing/1password/",
+    "c": "Productivity"
+  },
+  {
+    "n": "Le Chat",
+    "h": "/ai-pricing/le-chat/",
+    "c": "AI Subscriptions"
+  },
+  {
+    "n": "Duolingo",
+    "h": "/education-pricing/duolingo/",
+    "c": "Education"
+  },
+  {
+    "n": "Speak",
+    "h": "/education-pricing/speak/",
+    "c": "Education"
+  },
+  {
+    "n": "Babbel",
+    "h": "/education-pricing/babbel/",
+    "c": "Education"
+  },
+  {
+    "n": "MasterClass",
+    "h": "/education-pricing/masterclass/",
+    "c": "Education"
+  },
+  {
+    "n": "Simply Piano",
+    "h": "/education-pricing/simply-piano/",
+    "c": "Education"
+  },
+  {
+    "n": "Brilliant",
+    "h": "/education-pricing/brilliant/",
+    "c": "Education"
+  },
+  {
+    "n": "Gauth",
+    "h": "/education-pricing/gauth/",
+    "c": "Education"
+  },
+  {
+    "n": "Pimsleur",
+    "h": "/education-pricing/pimsleur/",
+    "c": "Education"
+  },
+  {
+    "n": "Quizlet",
+    "h": "/education-pricing/quizlet/",
+    "c": "Education"
+  },
+  {
+    "n": "LinkedIn Learning",
+    "h": "/education-pricing/linkedin-learning/",
+    "c": "Education"
+  },
+  {
+    "n": "Coursera Plus",
+    "h": "/education-pricing/coursera/",
+    "c": "Education"
+  },
+  {
+    "n": "Memrise",
+    "h": "/education-pricing/memrise/",
+    "c": "Education"
+  },
+  {
+    "n": "Drops",
+    "h": "/education-pricing/drops/",
+    "c": "Education"
+  },
+  {
+    "n": "Blinkist",
+    "h": "/education-pricing/blinkist/",
+    "c": "Education"
+  },
+  {
+    "n": "Headway",
+    "h": "/education-pricing/headway/",
+    "c": "Education"
+  },
+  {
+    "n": "Lingvano",
+    "h": "/education-pricing/lingvano/",
+    "c": "Education"
+  },
+  {
+    "n": "ELSA Speak",
+    "h": "/education-pricing/elsa-speak/",
+    "c": "Education"
+  },
+  {
+    "n": "Rosetta Stone",
+    "h": "/education-pricing/rosetta-stone/",
+    "c": "Education"
+  },
+  {
+    "n": "Codecademy Go",
+    "h": "/education-pricing/codecademy-go/",
+    "c": "Education"
+  },
+  {
+    "n": "Sololearn",
+    "h": "/education-pricing/sololearn/",
+    "c": "Education"
+  },
+  {
+    "n": "DataCamp",
+    "h": "/education-pricing/datacamp/",
+    "c": "Education"
+  },
+  {
+    "n": "Skillshare",
+    "h": "/education-pricing/skillshare/",
+    "c": "Education"
+  },
+  {
+    "n": "Imprint",
+    "h": "/education-pricing/imprint/",
+    "c": "Education"
+  },
+  {
+    "n": "Lingokids",
+    "h": "/education-pricing/lingokids/",
+    "c": "Education"
+  },
+  {
+    "n": "Mimo",
+    "h": "/education-pricing/mimo/",
+    "c": "Education"
+  },
+  {
+    "n": "Epic",
+    "h": "/education-pricing/epic-kids-books/",
+    "c": "Education"
+  },
+  {
+    "n": "Learn to Read - Reading.com",
+    "h": "/education-pricing/reading-com/",
+    "c": "Education"
+  },
+  {
+    "n": "Speak & Learn English",
+    "h": "/education-pricing/speak-learn-english/",
+    "c": "Education"
+  },
+  {
+    "n": "EF Hello Speak",
+    "h": "/education-pricing/ef-hello/",
+    "c": "Education"
+  },
+  {
+    "n": "Ling",
+    "h": "/education-pricing/ling/",
+    "c": "Education"
+  },
+  {
+    "n": "Lingvist",
+    "h": "/education-pricing/lingvist/",
+    "c": "Education"
+  },
+  {
+    "n": "Impulse",
+    "h": "/education-pricing/impulse/",
+    "c": "Education"
+  },
+  {
+    "n": "AnkiMobile Flashcards",
+    "h": "/education-pricing/ankimobile/",
+    "c": "Education"
+  },
+  {
+    "n": "Finelo",
+    "h": "/education-pricing/finelo/",
+    "c": "Education"
+  },
+  {
+    "n": "Deepstash",
+    "h": "/education-pricing/deepstash/",
+    "c": "Education"
+  },
+  {
+    "n": "Vocabulary",
+    "h": "/education-pricing/vocabulary/",
+    "c": "Education"
+  },
+  {
+    "n": "Elevate",
+    "h": "/education-pricing/elevate/",
+    "c": "Education"
+  },
+  {
+    "n": "Lumosity",
+    "h": "/education-pricing/lumosity/",
+    "c": "Education"
+  },
+  {
+    "n": "Enki",
+    "h": "/education-pricing/enki/",
+    "c": "Education"
+  },
+  {
+    "n": "Chineasy",
+    "h": "/education-pricing/chineasy/",
+    "c": "Education"
+  },
+  {
+    "n": "Bunpo",
+    "h": "/education-pricing/bunpo/",
+    "c": "Education"
+  },
+  {
+    "n": "Eggbun",
+    "h": "/education-pricing/eggbun/",
+    "c": "Education"
+  },
+  {
+    "n": "Encode",
+    "h": "/education-pricing/encode/",
+    "c": "Education"
+  },
+  {
+    "n": "Baldur's Gate 3",
+    "h": "/steam-pricing/baldurs-gate-3/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Cyberpunk 2077",
+    "h": "/steam-pricing/cyberpunk-2077/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Sekiro: Shadows Die Twice",
+    "h": "/steam-pricing/sekiro-shadows-die-twice/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Stardew Valley",
+    "h": "/steam-pricing/stardew-valley/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Hollow Knight: Silksong",
+    "h": "/steam-pricing/hollow-knight-silksong/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Palworld",
+    "h": "/steam-pricing/palworld/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Mount & Blade II: Bannerlord",
+    "h": "/steam-pricing/mount-and-blade-ii-bannerlord/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Red Dead Redemption 2",
+    "h": "/steam-pricing/red-dead-redemption-2/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Forza Horizon 6",
+    "h": "/steam-pricing/forza-horizon-6/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Dead by Daylight",
+    "h": "/steam-pricing/dead-by-daylight/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Rust",
+    "h": "/steam-pricing/rust/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Subnautica 2",
+    "h": "/steam-pricing/subnautica-2/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "MECCHA CHAMELEON",
+    "h": "/steam-pricing/meccha-chameleon/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "ELDEN RING",
+    "h": "/steam-pricing/elden-ring/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Terraria",
+    "h": "/steam-pricing/terraria/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "DEATH STRANDING 2: ON THE BEACH",
+    "h": "/steam-pricing/death-stranding-2-on-the-beach/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Resident Evil Requiem",
+    "h": "/steam-pricing/resident-evil-requiem/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "God of War Ragnarök",
+    "h": "/steam-pricing/god-of-war-ragnarok/",
+    "c": "Steam Games"
+  },
+  {
+    "n": "Nintendo Switch Online",
+    "h": "/eshop-pricing/nintendo-switch-online/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "The Legend of Zelda: Tears of the Kingdom",
+    "h": "/eshop-pricing/zelda-tears-of-the-kingdom/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Animal Crossing: New Horizons",
+    "h": "/eshop-pricing/animal-crossing-new-horizons/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Splatoon 3",
+    "h": "/eshop-pricing/splatoon-3/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Super Smash Bros. Ultimate",
+    "h": "/eshop-pricing/super-smash-bros-ultimate/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Super Mario Galaxy + Super Mario Galaxy 2",
+    "h": "/eshop-pricing/super-mario-galaxy-plus-super-mario-galaxy-2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Super Mario Party Jamboree",
+    "h": "/eshop-pricing/super-mario-party-jamboree/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Mario Kart 8 Deluxe",
+    "h": "/eshop-pricing/mario-kart-8-deluxe/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Pokémon Legends: Z-A",
+    "h": "/eshop-pricing/pokemon-legends-z-a/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Pokémon Scarlet",
+    "h": "/eshop-pricing/pokemon-scarlet/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Pokémon Violet",
+    "h": "/eshop-pricing/pokemon-violet/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "MONSTER HUNTER RISE",
+    "h": "/eshop-pricing/monster-hunter-rise/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "FINAL FANTASY VII REBIRTH",
+    "h": "/eshop-pricing/final-fantasy-vii-rebirth/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Xenoblade Chronicles 3",
+    "h": "/eshop-pricing/xenoblade-chronicles-3/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Kirby and the Forgotten Land",
+    "h": "/eshop-pricing/kirby-and-the-forgotten-land/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Super Mario Odyssey",
+    "h": "/eshop-pricing/super-mario-odyssey/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Mario Kart World",
+    "h": "/eshop-pricing/mario-kart-world/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Donkey Kong Bananza",
+    "h": "/eshop-pricing/donkey-kong-bananza/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Kirby Air Riders",
+    "h": "/eshop-pricing/kirby-air-riders/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Hyrule Warriors: Age of Imprisonment",
+    "h": "/eshop-pricing/hyrule-warriors-age-of-imprisonment/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Metroid Prime 4: Beyond – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/metroid-prime-4-beyond/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Pokémon Pokopia",
+    "h": "/eshop-pricing/pokemon-pokopia/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Super Mario Bros. Wonder – Nintendo Switch 2 Edition + Meetup in Bellabel Park",
+    "h": "/eshop-pricing/super-mario-bros-wonder-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Mario Tennis Fever",
+    "h": "/eshop-pricing/mario-tennis-fever/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Star Fox",
+    "h": "/eshop-pricing/star-fox/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Yoshi and the Mysterious Book",
+    "h": "/eshop-pricing/yoshi-and-the-mysterious-book/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Xenoblade Chronicles X: Definitive Edition – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/xenoblade-chronicles-x-definitive-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Xenoblade Chronicles: Definitive Edition – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/xenoblade-chronicles-definitive-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Fitness Boxing 3: Your Personal Trainer – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/fitness-boxing-3-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Digimon Story Time Stranger",
+    "h": "/eshop-pricing/digimon-story-time-stranger/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Sonic Frontiers – Definitive Edition",
+    "h": "/eshop-pricing/sonic-frontiers-definitive-edition/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "FINAL FANTASY VII REMAKE INTERGRADE",
+    "h": "/eshop-pricing/final-fantasy-vii-remake-intergrade/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Indiana Jones and the Great Circle",
+    "h": "/eshop-pricing/indiana-jones-and-the-great-circle/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "PRAGMATA",
+    "h": "/eshop-pricing/pragmata/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Resident Evil Requiem",
+    "h": "/eshop-pricing/resident-evil-requiem/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "DRAGON QUEST VII Reimagined",
+    "h": "/eshop-pricing/dragon-quest-vii-reimagined/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Monster Hunter Stories 3: Twisted Reflection",
+    "h": "/eshop-pricing/monster-hunter-stories-3/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Dynasty Warriors: Origins",
+    "h": "/eshop-pricing/dynasty-warriors-origins/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Cyberpunk 2077: Ultimate Edition",
+    "h": "/eshop-pricing/cyberpunk-2077-ultimate-edition/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Street Fighter 6 Years 1-2 Fighters Edition",
+    "h": "/eshop-pricing/street-fighter-6-years-1-2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Hogwarts Legacy",
+    "h": "/eshop-pricing/hogwarts-legacy/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Sid Meier's Civilization VII – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/civilization-vii-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "HITMAN World of Assassination – Signature Edition",
+    "h": "/eshop-pricing/hitman-world-of-assassination-signature/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Yakuza 0 Director's Cut",
+    "h": "/eshop-pricing/yakuza-0-directors-cut/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "BRAVELY DEFAULT FLYING FAIRY HD Remaster",
+    "h": "/eshop-pricing/bravely-default-flying-fairy-hd/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Rune Factory: Guardians of Azuma – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/rune-factory-guardians-of-azuma-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Daemon X Machina: Titanic Scion",
+    "h": "/eshop-pricing/daemon-x-machina-titanic-scion/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Trails in the Sky 1st Chapter: Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/trails-in-the-sky-1st-chapter-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Hades II – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/hades-ii-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Story of Seasons: Grand Bazaar – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/story-of-seasons-grand-bazaar-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Split Fiction",
+    "h": "/eshop-pricing/split-fiction/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Star Wars Outlaws Gold Edition",
+    "h": "/eshop-pricing/star-wars-outlaws-gold-edition/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Persona 3 Reload",
+    "h": "/eshop-pricing/persona-3-reload/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Assassin's Creed Shadows",
+    "h": "/eshop-pricing/assassins-creed-shadows/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Sonic Racing: CrossWorlds – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/sonic-racing-crossworlds-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "EA SPORTS FC 26",
+    "h": "/eshop-pricing/ea-sports-fc-26/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "NBA 2K26",
+    "h": "/eshop-pricing/nba-2k26/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "EA SPORTS Madden NFL 26",
+    "h": "/eshop-pricing/ea-sports-madden-nfl-26/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "MLB The Show 26",
+    "h": "/eshop-pricing/mlb-the-show-26/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "DRAGON QUEST I & II HD-2D Remake",
+    "h": "/eshop-pricing/dragon-quest-i-ii-hd-2d-remake/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Tomodachi Life: Living the Dream",
+    "h": "/eshop-pricing/tomodachi-life-living-the-dream/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "The Adventures of Elliot: The Millennium Tales",
+    "h": "/eshop-pricing/the-adventures-of-elliot/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "Atelier Yumia: The Alchemist of Memories & the Envisioned Land – Nintendo Switch 2 Edition",
+    "h": "/eshop-pricing/atelier-yumia-switch2/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "OCTOPATH TRAVELER 0",
+    "h": "/eshop-pricing/octopath-traveler-0/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "FINAL FANTASY TACTICS – The Ivalice Chronicles",
+    "h": "/eshop-pricing/final-fantasy-tactics-ivalice-chronicles/",
+    "c": "Nintendo eShop"
+  },
+  {
+    "n": "iPhone Duo",
+    "h": "/apple-pricing/iphone-duo/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPhone 18 Pro",
+    "h": "/apple-pricing/iphone-18-pro/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPhone 18 Pro Max",
+    "h": "/apple-pricing/iphone-18-pro-max/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPhone 17",
+    "h": "/apple-pricing/iphone-17/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPhone Air",
+    "h": "/apple-pricing/iphone-air/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPhone 17 Pro",
+    "h": "/apple-pricing/iphone-17-pro/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPhone 17 Pro Max",
+    "h": "/apple-pricing/iphone-17-pro-max/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "MacBook Air 13\" (M5)",
+    "h": "/apple-pricing/macbook-air/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "MacBook Pro 14\" (M5)",
+    "h": "/apple-pricing/macbook-pro/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "MacBook Neo 13\" (A18 Pro)",
+    "h": "/apple-pricing/macbook-neo/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Mac mini (M6)",
+    "h": "/apple-pricing/mac-mini/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Mac Studio (M5 Max)",
+    "h": "/apple-pricing/mac-studio/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPad Pro 11\" (M5)",
+    "h": "/apple-pricing/ipad-pro/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPad Air 11\" (M4)",
+    "h": "/apple-pricing/ipad-air/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "iPad (A16)",
+    "h": "/apple-pricing/ipad/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple Watch Series 12",
+    "h": "/apple-pricing/apple-watch-series-12/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple Watch Ultra 4",
+    "h": "/apple-pricing/apple-watch-ultra-4/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple Watch SE 3",
+    "h": "/apple-pricing/apple-watch-se-3/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple Watch Series 11",
+    "h": "/apple-pricing/apple-watch-series-11/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple Watch Ultra 3",
+    "h": "/apple-pricing/apple-watch-ultra-3/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "AirPods 5",
+    "h": "/apple-pricing/airpods-5/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "AirPods Pro 3",
+    "h": "/apple-pricing/airpods-pro-3/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "AirPods Max 2",
+    "h": "/apple-pricing/airpods-max-2/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "AirPods 4",
+    "h": "/apple-pricing/airpods-4/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "AirPods Max",
+    "h": "/apple-pricing/airpods-max/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple Vision Pro (M5)",
+    "h": "/apple-pricing/apple-vision-pro/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Apple TV 4K",
+    "h": "/apple-pricing/apple-tv-4k/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "AirTag",
+    "h": "/apple-pricing/airtag/",
+    "c": "Apple Hardware"
+  },
+  {
+    "n": "Roblox",
+    "h": "/mobile-game-pricing/roblox/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Pokémon GO",
+    "h": "/mobile-game-pricing/pokemon-go/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Genshin Impact",
+    "h": "/mobile-game-pricing/genshin-impact/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Honkai: Star Rail",
+    "h": "/mobile-game-pricing/honkai-star-rail/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Minecraft",
+    "h": "/mobile-game-pricing/minecraft/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "PUBG MOBILE",
+    "h": "/mobile-game-pricing/pubg-mobile/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Fortnite",
+    "h": "/mobile-game-pricing/fortnite/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Brawl Stars",
+    "h": "/mobile-game-pricing/brawl-stars/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Whiteout Survival",
+    "h": "/mobile-game-pricing/whiteout-survival/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Last War: Survival",
+    "h": "/mobile-game-pricing/last-war-survival/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Pokémon TCG Pocket",
+    "h": "/mobile-game-pricing/pokemon-tcg-pocket/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Love and Deepspace",
+    "h": "/mobile-game-pricing/love-and-deepspace/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Wuthering Waves",
+    "h": "/mobile-game-pricing/wuthering-waves/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Zenless Zone Zero",
+    "h": "/mobile-game-pricing/zenless-zone-zero/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Free Fire",
+    "h": "/mobile-game-pricing/free-fire/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Magic: The Gathering Arena",
+    "h": "/mobile-game-pricing/magic-the-gathering-arena/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Kingshot",
+    "h": "/mobile-game-pricing/kingshot/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Mobile Legends: Bang Bang",
+    "h": "/mobile-game-pricing/mobile-legends-bang-bang/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "League of Legends: Wild Rift",
+    "h": "/mobile-game-pricing/league-of-legends-wild-rift/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "eFootball",
+    "h": "/mobile-game-pricing/efootball/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "AFK Journey",
+    "h": "/mobile-game-pricing/afk-journey/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "MONOPOLY GO!",
+    "h": "/mobile-game-pricing/monopoly-go/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Teamfight Tactics",
+    "h": "/mobile-game-pricing/teamfight-tactics/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Rainbow Six Mobile",
+    "h": "/mobile-game-pricing/rainbow-six-mobile/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Avatar World",
+    "h": "/mobile-game-pricing/avatar-world/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Coin Master",
+    "h": "/mobile-game-pricing/coin-master/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Rise of Kingdoms",
+    "h": "/mobile-game-pricing/rise-of-kingdoms/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Candy Crush Saga",
+    "h": "/mobile-game-pricing/candy-crush-saga/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Archero 2",
+    "h": "/mobile-game-pricing/archero-2/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Merge Mansion",
+    "h": "/mobile-game-pricing/merge-mansion/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Plants vs. Zombies 2",
+    "h": "/mobile-game-pricing/plants-vs-zombies-2/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Bloons TD 6",
+    "h": "/mobile-game-pricing/bloons-td-6/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Balatro",
+    "h": "/mobile-game-pricing/balatro/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Slay the Spire",
+    "h": "/mobile-game-pricing/slay-the-spire/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Fallout Shelter",
+    "h": "/mobile-game-pricing/fallout-shelter/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Don't Starve Together",
+    "h": "/mobile-game-pricing/dont-starve-together/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Grand Theft Auto: San Andreas",
+    "h": "/mobile-game-pricing/gta-san-andreas/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Plague Inc.",
+    "h": "/mobile-game-pricing/plague-inc/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "MONOPOLY: The Board Game",
+    "h": "/mobile-game-pricing/monopoly-board-game/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Super Mario Run",
+    "h": "/mobile-game-pricing/super-mario-run/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "SpongeBob SquarePants: Battle for Bikini Bottom",
+    "h": "/mobile-game-pricing/spongebob-bfbb/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "A Little to the Left",
+    "h": "/mobile-game-pricing/a-little-to-the-left/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Thronefall",
+    "h": "/mobile-game-pricing/thronefall/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Azur Lane",
+    "h": "/mobile-game-pricing/azur-lane/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Blue Archive",
+    "h": "/mobile-game-pricing/blue-archive/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Fate/Grand Order",
+    "h": "/mobile-game-pricing/fate-grand-order/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Shadowverse: Worlds Beyond",
+    "h": "/mobile-game-pricing/shadowverse-worlds-beyond/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Onmyoji",
+    "h": "/mobile-game-pricing/onmyoji/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Arknights",
+    "h": "/mobile-game-pricing/arknights/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Umamusume: Pretty Derby",
+    "h": "/mobile-game-pricing/umamusume/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Clash of Clans",
+    "h": "/mobile-game-pricing/clash-of-clans/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Clash Royale",
+    "h": "/mobile-game-pricing/clash-royale/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "Royal Match",
+    "h": "/mobile-game-pricing/royal-match/",
+    "c": "Mobile Games"
+  },
+  {
+    "n": "VPN Comparison",
+    "h": "/leaderboard/free/",
+    "c": "AI Accessibility"
+  },
+  {
+    "n": "Gift Card Comparison",
+    "h": "/gift-cards/",
+    "c": "AI Accessibility"
+  }
+]

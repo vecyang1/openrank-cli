@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenTheRank — Global Regional Pricing & Arbitrage Dashboard</title>
+  <style>
+    :root {
+      --bg-base: #0B1313;
+      --bg-surface: #121E1E;
+      --bg-card: #182828;
+      --bg-card-hover: #1E3333;
+      --border: #243D3D;
+      --border-focus: #10B981;
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --text-dim: #6B7280;
+      --accent: #10B981;
+      --accent-hover: #059669;
+      --gold: #F59E0B;
+      --red: #EF4444;
+      --green: #10B981;
+      --blue: #3B82F6;
+      --radius: 8px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #000;
+      font-size: 14px;
+    }
+    .brand-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .badge-version {
+      font-size: 0.7rem;
+      background: var(--border);
+      color: var(--accent);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+
+    .header-center {
+      flex: 1;
+      max-width: 480px;
+      margin: 0 1.5rem;
+      position: relative;
+    }
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem 0.85rem;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+    }
+    .search-item {
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .search-item:hover, .search-item.active {
+      background: var(--bg-card-hover);
+    }
+    .search-item-name { font-weight: 600; font-size: 0.9rem; }
+    .search-item-cat { font-size: 0.75rem; color: var(--text-muted); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .container {
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Category Nav Bar */
+    .category-nav {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+    .category-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .category-pill:hover {
+      color: var(--text-main);
+      background: var(--bg-card);
+    }
+    .category-pill.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Catalog Quick Grid */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.85rem;
+    }
+    .product-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-card:hover {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .product-card.active {
+      border-color: var(--accent);
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .product-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .product-card-cat {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Main Pricing Section */
+    .pricing-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .pricing-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .product-hero-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .baseline-badge {
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .verified-badge {
+      font-size: 0.75rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      padding: 0.85rem 1.5rem;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+    .platform-filters {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .platform-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .platform-btn:hover { color: var(--text-main); }
+    .platform-btn.active {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+      border-color: var(--accent);
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .select-sm, .input-sm {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 4px;
+      padding: 0.3rem 0.5rem;
+      font-size: 0.8rem;
+      outline: none;
+    }
+    .input-sm:focus, .select-sm:focus { border-color: var(--border-focus); }
+
+    /* Table Styles */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    th {
+      background: var(--bg-card);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .col-cc { font-family: var(--font-mono); font-weight: 600; }
+    .col-price { font-family: var(--font-mono); font-weight: 600; }
+    .col-usd { font-family: var(--font-mono); }
+    .delta-green { color: var(--green); font-weight: 600; }
+    .delta-red { color: var(--red); font-weight: 600; }
+    .delta-neutral { color: var(--text-dim); }
+
+    .risk-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .risk-low { background: rgba(16, 185, 129, 0.15); color: var(--green); }
+    .risk-medium { background: rgba(245, 158, 11, 0.15); color: var(--gold); }
+    .risk-high { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+
+    /* Apple Storefront Panel */
+    .apple-panel {
+      margin-top: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .apple-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+    .apple-iap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.65rem;
+    }
+    .apple-iap-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .apple-iap-name { font-weight: 500; font-size: 0.85rem; }
+    .apple-iap-price { font-family: var(--font-mono); color: var(--gold); font-weight: 600; font-size: 0.85rem; }
+
+    /* Modal & Drawer Overlays */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.65rem;
+    }
+
+    /* Drawer */
+    .drawer {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 360px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.25s ease-in-out;
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .drawer-item {
+      padding: 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.15s;
+    }
+    .drawer-item:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .empty-state h3 { color: var(--text-main); margin-bottom: 0.5rem; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Mobile Responsive Adaptation */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+        padding: 0.75rem 1rem;
+      }
+      .header-center {
+        margin: 0;
+        max-width: 100%;
+      }
+      .header-actions {
+        justify-content: space-between;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+      }
+      .container {
+        padding: 1rem;
+      }
+      .catalog-grid {
+        grid-template-columns: 1fr;
+      }
+      .table-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .table-controls-left, .table-controls-right {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .drawer {
+        width: 100%;
+      }
+      footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <a href="#overview" class="brand" id="brand-logo-btn">
+      <div class="brand-logo">OTR</div>
+      <div>
+        <div class="brand-name">OpenTheRank</div>
+      </div>
+      <span class="badge-version" id="version-display">v0.1.0</span>
+    </a>
+
+    <div class="header-center">
+      <div class="search-input-wrap">
+        <input 
+          type="text" 
+          id="global-search" 
+          class="search-input" 
+          placeholder="Search products (e.g. Gemini, ChatGPT, Netflix, iPhone)..." 
+          autocomplete="off"
+        >
+      </div>
+      <div class="search-dropdown" id="search-dropdown"></div>
+    </div>
+
+    <div class="header-actions">
+      <div class="status-badge" id="server-status">
+        <span class="status-dot"></span>
+        <span id="status-text">Connecting...</span>
+      </div>
+      <button class="btn btn-sm" id="btn-watchlist-toggle" title="View Watchlist">
+        ★ Watchlist (<span id="watchlist-count">0</span>)
+      </button>
+      <button class="btn btn-sm" id="btn-history-toggle" title="View Recents">
+        ⏱ History
+      </button>
+      <button class="btn btn-sm" id="btn-diag-toggle" title="System Diagnostics">
+        🩺 Diag
+      </button>
+      <button class="btn btn-sm" id="btn-settings-toggle" title="Configure Settings">
+        ⚙ Settings
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Category Nav Pills -->
+    <div class="category-nav" id="category-nav">
+      <button class="category-pill active" data-cat="all">All Products</button>
+      <button class="category-pill" data-cat="AI Subscriptions">AI Subscriptions</button>
+      <button class="category-pill" data-cat="Streaming">Streaming</button>
+      <button class="category-pill" data-cat="Gaming & Entertainment">Gaming</button>
+      <button class="category-pill" data-cat="Apple Hardware">Hardware</button>
+    </div>
+
+    <!-- Quick Catalog Grid -->
+    <section>
+      <div class="catalog-grid" id="catalog-grid"></div>
+    </section>
+
+    <!-- Main Pricing Table View -->
+    <section class="pricing-panel" id="pricing-section">
+      <div class="pricing-header">
+        <div>
+          <div class="product-hero-title">
+            <span id="pricing-product-name">Select a product above</span>
+            <span class="baseline-badge" id="pricing-baseline-price" style="display:none;"></span>
+            <span class="verified-badge" id="pricing-verified-badge" style="display:none;">✓ Apple Storefront Verified</span>
+          </div>
+          <div id="pricing-notes" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;"></div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="btn btn-sm" id="btn-bookmark" style="display:none;">
+            ★ Bookmark
+          </button>
+          <button class="btn btn-sm" id="btn-refresh-pricing" style="display:none;">
+            ↻ Refresh
+          </button>
+          <button class="btn btn-sm" id="btn-export-csv" style="display:none;">
+            ⬇ Export CSV
+          </button>
+          <button class="btn btn-sm" id="btn-export-json" style="display:none;">
+            ⬇ Export JSON
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Controls Bar -->
+      <div class="controls-bar" id="table-controls" style="display:none;">
+        <div class="platform-filters" id="platform-filter-group">
+          <button class="platform-btn active" data-platform="all">All Stores</button>
+          <button class="platform-btn" data-platform="appstore">Apple App Store</button>
+          <button class="platform-btn" data-platform="play">Google Play</button>
+          <button class="platform-btn" data-platform="web">Web Store</button>
+        </div>
+
+        <div class="filter-group">
+          <label style="font-size: 0.8rem; color: var(--text-muted);" for="filter-country">Country:</label>
+          <input type="text" id="filter-country" class="input-sm" placeholder="ISO2 (e.g. PH, TR)" style="width: 100px; text-transform: uppercase;" maxlength="2">
+
+          <label style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;" for="sort-selector">Sort:</label>
+          <select id="sort-selector" class="select-sm">
+            <option value="usd_asc">Cheapest (USD ↑)</option>
+            <option value="delta_asc">Max Discount (Delta ↑)</option>
+            <option value="country_asc">Country (A-Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pricing Table -->
+      <div class="table-wrap">
+        <table id="pricing-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">CC</th>
+              <th>Region</th>
+              <th>Platform</th>
+              <th>Local Price</th>
+              <th>USD Price</th>
+              <th>vs US %</th>
+              <th>Risk Level</th>
+              <th>Tax Info</th>
+            </tr>
+          </thead>
+          <tbody id="pricing-tbody">
+            <tr>
+              <td colspan="8">
+                <div class="empty-state">
+                  <h3>No Product Selected</h3>
+                  <p>Choose a product from the catalog above or type in the search bar.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Apple Storefront Validation Breakdown Panel -->
+      <div class="apple-panel" id="apple-panel" style="display:none;">
+        <div class="apple-panel-header">
+          <div>
+            <strong style="font-size: 0.95rem;">First-Party Apple App Storefront Data</strong>
+            <span id="apple-app-id" style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem; font-family: var(--font-mono);"></span>
+          </div>
+          <button class="btn btn-sm btn-primary" id="btn-validate-apple">
+            Probe Apple Storefront
+          </button>
+        </div>
+        <div id="apple-status-msg" style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--text-muted);"></div>
+        <div class="apple-iap-grid" id="apple-iap-grid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Settings Modal Overlay -->
+  <div class="overlay" id="modal-settings">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>User Preferences & Settings</h3>
+        <button class="btn btn-sm" id="btn-close-settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="setting-base-currency">Base Comparison Currency</label>
+          <select id="setting-base-currency" class="select-sm">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+            <option value="PHP">PHP (₱)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-default-platform">Default Storefront Filter</label>
+          <select id="setting-default-platform" class="select-sm">
+            <option value="all">All Storefronts</option>
+            <option value="appstore">Apple App Store</option>
+            <option value="play">Google Play</option>
+            <option value="web">Direct Web</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-default-country">Default Country Code (ISO2)</label>
+          <input type="text" id="setting-default-country" class="input-sm" style="text-transform: uppercase;" maxlength="2" placeholder="e.g. US">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-cache-ttl">Cache Expiration (Hours)</label>
+          <input type="number" id="setting-cache-ttl" class="input-sm" min="1" max="168" value="24">
+        </div>
+        <div id="settings-save-feedback" style="font-size: 0.8rem; color: var(--green); display: none;">
+          Settings saved successfully!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm" id="btn-cancel-settings">Cancel</button>
+        <button class="btn btn-sm btn-primary" id="btn-save-settings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diagnostics Modal Overlay -->
+  <div class="overlay" id="modal-diagnostics">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>System & Network Diagnostics</h3>
+        <button class="btn btn-sm" id="btn-close-diag">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.85rem; color:var(--text-muted);">Health check probe across OpenTheRank and Apple CDN</span>
+          <button class="btn btn-sm btn-primary" id="btn-run-diag">Run Diagnostic Probe</button>
+        </div>
+        <pre id="diag-output" style="background:var(--bg-base); padding:1rem; border-radius:6px; font-size:0.8rem; font-family:var(--font-mono); overflow:auto; max-height:280px; border:1px solid var(--border);">Click 'Run Diagnostic Probe' to execute live telemetry.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Drawer -->
+  <aside class="drawer" id="drawer-history">
+    <div class="drawer-header">
+      <strong>Search & Pricing History</strong>
+      <div style="display:flex; gap:0.4rem;">
+        <button class="btn btn-sm" id="btn-clear-history">Clear</button>
+        <button class="btn btn-sm" id="btn-close-history">✕</button>
+      </div>
+    </div>
+    <div class="drawer-body" id="history-list">
+      <div class="empty-state"><p>No recent searches</p></div>
+    </div>
+  </aside>
+
+  <!-- Watchlist Drawer -->
+  <aside class="drawer" id="drawer-watchlist">
+    <div class="drawer-header">
+      <strong>Your Bookmarked Products</strong>
+      <button class="btn btn-sm" id="btn-close-watchlist">✕</button>
+    </div>
+    <div class="drawer-body" id="watchlist-list">
+      <div class="empty-state"><p>No items in watchlist</p></div>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer>
+    <div>OpenTheRank CLI & Web Dashboard · 100% Pure Standard Library Python</div>
+    <div style="font-family: var(--font-mono);" id="footer-uptime">Endpoint: 127.0.0.1</div>
+  </footer>
+
+  <script>
+    // App State Management (SSOT)
+    const state = {
+      catalog: [],
+      currentProduct: null,
+      pricingData: null,
+      activeCategory: 'all',
+      activePlatform: 'all',
+      countryFilter: '',
+      sortOrder: 'usd_asc',
+      watchlist: [],
+      history: [],
+      settings: {
+        base_currency: 'USD',
+        default_platform: 'all',
+        default_country: 'US',
+        cache_ttl_hours: 24
+      }
+    };
+
+    // DOM Elements
+    const el = {
+      statusText: document.getElementById('status-text'),
+      serverStatus: document.getElementById('server-status'),
+      catalogGrid: document.getElementById('catalog-grid'),
+      categoryNav: document.getElementById('category-nav'),
+      globalSearch: document.getElementById('global-search'),
+      searchDropdown: document.getElementById('search-dropdown'),
+      pricingSection: document.getElementById('pricing-section'),
+      pricingProductName: document.getElementById('pricing-product-name'),
+      pricingBaselinePrice: document.getElementById('pricing-baseline-price'),
+      pricingVerifiedBadge: document.getElementById('pricing-verified-badge'),
+      pricingNotes: document.getElementById('pricing-notes'),
+      pricingTbody: document.getElementById('pricing-tbody'),
+      tableControls: document.getElementById('table-controls'),
+      filterCountry: document.getElementById('filter-country'),
+      sortSelector: document.getElementById('sort-selector'),
+      platformFilters: document.querySelectorAll('.platform-btn'),
+      btnBookmark: document.getElementById('btn-bookmark'),
+      btnRefresh: document.getElementById('btn-refresh-pricing'),
+      btnExportCsv: document.getElementById('btn-export-csv'),
+      btnExportJson: document.getElementById('btn-export-json'),
+      applePanel: document.getElementById('apple-panel'),
+      appleAppId: document.getElementById('apple-app-id'),
+      appleStatusMsg: document.getElementById('apple-status-msg'),
+      appleIapGrid: document.getElementById('apple-iap-grid'),
+      btnValidateApple: document.getElementById('btn-validate-apple'),
+      modalSettings: document.getElementById('modal-settings'),
+      btnSettingsToggle: document.getElementById('btn-settings-toggle'),
+      btnCloseSettings: document.getElementById('btn-close-settings'),
+      btnCancelSettings: document.getElementById('btn-cancel-settings'),
+      btnSaveSettings: document.getElementById('btn-save-settings'),
+      settingsSaveFeedback: document.getElementById('settings-save-feedback'),
+      drawerHistory: document.getElementById('drawer-history'),
+      btnHistoryToggle: document.getElementById('btn-history-toggle'),
+      btnCloseHistory: document.getElementById('btn-close-history'),
+      btnClearHistory: document.getElementById('btn-clear-history'),
+      historyList: document.getElementById('history-list'),
+      drawerWatchlist: document.getElementById('drawer-watchlist'),
+      btnWatchlistToggle: document.getElementById('btn-watchlist-toggle'),
+      btnCloseWatchlist: document.getElementById('btn-close-watchlist'),
+      watchlistList: document.getElementById('watchlist-list'),
+      watchlistCount: document.getElementById('watchlist-count'),
+      modalDiag: document.getElementById('modal-diagnostics'),
+      btnDiagToggle: document.getElementById('btn-diag-toggle'),
+      btnCloseDiag: document.getElementById('btn-close-diag'),
+      btnRunDiag: document.getElementById('btn-run-diag'),
+      diagOutput: document.getElementById('diag-output'),
+      brandLogoBtn: document.getElementById('brand-logo-btn')
+    };
+
+    // Health Probe
+    async function checkHealth() {
+      try {
+        const res = await fetch('/api/health');
+        if (res.ok) {
+          const data = await res.json();
+          el.statusText.textContent = `Online (${data.version})`;
+          el.serverStatus.style.background = 'rgba(16, 185, 129, 0.15)';
+        } else {
+          el.statusText.textContent = 'Degraded';
+        }
+      } catch (err) {
+        el.statusText.textContent = 'Offline';
+        el.serverStatus.style.background = 'rgba(239, 68, 68, 0.15)';
+      }
+    }
+
+    // Load Initial Catalog
+    async function loadCatalog(category = null) {
+      try {
+        const url = category && category !== 'all' 
+          ? `/api/catalog?category=${encodeURIComponent(category)}&limit=24`
+          : '/api/catalog?limit=24';
+        const res = await fetch(url);
+        const data = await res.json();
+        state.catalog = data.products || [];
+        renderCatalogGrid();
+      } catch (err) {
+        console.error('Failed to load catalog:', err);
+      }
+    }
+
+    // Render Catalog Grid
+    function renderCatalogGrid() {
+      el.catalogGrid.innerHTML = '';
+      if (!state.catalog.length) {
+        el.catalogGrid.innerHTML = '<div style="color:var(--text-muted); padding:1rem;">No products found in category.</div>';
+        return;
+      }
+      state.catalog.forEach(prod => {
+        const card = document.createElement('div');
+        card.className = `product-card ${state.currentProduct && state.currentProduct.slug === prod.slug ? 'active' : ''}`;
+        card.innerHTML = `
+          <div>
+            <div class="product-card-title">${escapeHtml(prod.name)}</div>
+            <div class="product-card-cat">${escapeHtml(prod.category)}</div>
+          </div>
+          <div style="font-size:0.75rem; color:var(--accent); margin-top:0.5rem;">View Pricing →</div>
+        `;
+        card.addEventListener('click', () => {
+          loadPricing(prod.slug);
+        });
+        el.catalogGrid.appendChild(card);
+      });
+    }
+
+    // Load Pricing for Product
+    async function loadPricing(productSlug, forceRefresh = false) {
+      if (!productSlug) return;
+      el.pricingProductName.textContent = `Loading ${productSlug}...`;
+      el.pricingTbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem;"><span class="spinner"></span> Fetching real-time regional pricing...</td></tr>`;
+
+      try {
+        const url = `/api/pricing?product=${encodeURIComponent(productSlug)}&platform=${state.activePlatform}&refresh=${forceRefresh}`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.message || 'Pricing load error');
+        }
+        const data = await res.json();
+        state.pricingData = data;
+        state.currentProduct = data.product;
+
+        // Update header & badges
+        el.pricingProductName.textContent = data.product.name;
+        if (data.baseline_us_price) {
+          el.pricingBaselinePrice.textContent = `US Baseline: $${data.baseline_us_price.toFixed(2)}`;
+          el.pricingBaselinePrice.style.display = 'inline-block';
+        } else {
+          el.pricingBaselinePrice.style.display = 'none';
+        }
+
+        if (data.first_party_validated) {
+          el.pricingVerifiedBadge.style.display = 'inline-block';
+        } else {
+          el.pricingVerifiedBadge.style.display = 'none';
+        }
+
+        el.pricingNotes.textContent = (data.validation_notes || []).join(' | ');
+
+        // Reveal controls
+        el.tableControls.style.display = 'flex';
+        el.btnBookmark.style.display = 'inline-flex';
+        el.btnRefresh.style.display = 'inline-flex';
+        el.btnExportCsv.style.display = 'inline-flex';
+        el.btnExportJson.style.display = 'inline-flex';
+        el.applePanel.style.display = 'block';
+
+        updateBookmarkButton();
+        renderPricingTable();
+        refreshHistory();
+        renderApplePanelHeader();
+      } catch (err) {
+        el.pricingProductName.textContent = 'Error Loading Product';
+        el.pricingTbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--red); padding:2rem;">${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+
+    // Render Pricing Table Rows
+    function renderPricingTable() {
+      if (!state.pricingData || !state.pricingData.records) return;
+
+      let records = [...state.pricingData.records];
+
+      // Country filtering
+      if (state.countryFilter) {
+        const q = state.countryFilter.toUpperCase();
+        records = records.filter(r => r.country_code.toUpperCase() === q);
+      }
+
+      // Platform filtering
+      if (state.activePlatform !== 'all') {
+        records = records.filter(r => r.platform.toLowerCase() === state.activePlatform.toLowerCase());
+      }
+
+      // Sorting
+      if (state.sortOrder === 'usd_asc') {
+        records.sort((a, b) => a.primary_tier.usd_price - b.primary_tier.usd_price);
+      } else if (state.sortOrder === 'delta_asc') {
+        records.sort((a, b) => (a.vs_us_delta ?? 999) - (b.vs_us_delta ?? 999));
+      } else if (state.sortOrder === 'country_asc') {
+        records.sort((a, b) => a.region_name.localeCompare(b.region_name));
+      }
+
+      el.pricingTbody.innerHTML = '';
+      if (!records.length) {
+        el.pricingTbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>No records matching current filters.</p></div></td></tr>`;
+        return;
+      }
+
+      records.forEach(r => {
+        const tr = document.createElement('tr');
+        
+        let deltaHtml = '<span class="delta-neutral">0.0%</span>';
+        if (r.vs_us_delta !== null && r.vs_us_delta !== undefined) {
+          if (r.vs_us_delta < 0) {
+            deltaHtml = `<span class="delta-green">${r.vs_us_delta.toFixed(1)}%</span>`;
+          } else if (r.vs_us_delta > 0) {
+            deltaHtml = `<span class="delta-red">+${r.vs_us_delta.toFixed(1)}%</span>`;
+          }
+        }
+
+        const riskClass = r.risk_level === 'Low' ? 'risk-low' : (r.risk_level === 'High' ? 'risk-high' : 'risk-medium');
+
+        tr.innerHTML = `
+          <td class="col-cc">${escapeHtml(r.country_code)}</td>
+          <td>${escapeHtml(r.region_name)}</td>
+          <td><span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted);">${escapeHtml(r.platform)}</span></td>
+          <td class="col-price">${escapeHtml(r.primary_tier.local_price_str)}</td>
+          <td class="col-usd">$${r.primary_tier.usd_price.toFixed(2)}</td>
+          <td>${deltaHtml}</td>
+          <td><span class="risk-tag ${riskClass}">${escapeHtml(r.risk_level || 'Low')}</span></td>
+          <td style="color:var(--text-dim); font-size:0.75rem;">${escapeHtml(r.tax_info || 'Included')}</td>
+        `;
+        el.pricingTbody.appendChild(tr);
+      });
+    }
+
+    // Apple Storefront Panel
+    function renderApplePanelHeader() {
+      if (!state.currentProduct) return;
+      el.appleAppId.textContent = `Slug: ${state.currentProduct.slug}`;
+      el.appleStatusMsg.textContent = 'Click probe to verify against live Apple CDN SSR IAP hydration.';
+      el.appleIapGrid.innerHTML = '';
+    }
+
+    async function probeAppleStorefront() {
+      if (!state.currentProduct) return;
+      const targetCountry = state.countryFilter || state.settings.default_country || 'US';
+      el.appleStatusMsg.innerHTML = `<span class="spinner"></span> Querying Apple CDN for ${state.currentProduct.slug} in ${targetCountry}...`;
+
+      try {
+        const res = await fetch(`/api/validate/apple?product=${encodeURIComponent(state.currentProduct.slug)}&country=${encodeURIComponent(targetCountry)}`);
+        const data = await res.json();
+        
+        if (data.is_spoofed) {
+          el.appleStatusMsg.innerHTML = `<span style="color:var(--red);">[!] Spoofing Alert: Redirected away to ${escapeHtml(data.final_url)}</span>`;
+        } else if (data.is_valid) {
+          el.appleStatusMsg.innerHTML = `<span style="color:var(--green);">✓ Validated on Apple App Store (${data.country_code.toUpperCase()}) — App ID: ${data.app_id}</span>`;
+        } else {
+          el.appleStatusMsg.innerHTML = `<span style="color:var(--gold);">Notice: ${escapeHtml(data.error || 'No IAPs found')}</span>`;
+        }
+
+        el.appleIapGrid.innerHTML = '';
+        (data.items || []).forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'apple-iap-card';
+          card.innerHTML = `
+            <span class="apple-iap-name">${escapeHtml(item.name)}</span>
+            <span class="apple-iap-price">${escapeHtml(item.local_price_str)}</span>
+          `;
+          el.appleIapGrid.appendChild(card);
+        });
+      } catch (err) {
+        el.appleStatusMsg.innerHTML = `<span style="color:var(--red);">Probe Error: ${escapeHtml(err.message)}</span>`;
+      }
+    }
+
+    // Global Search with Autocomplete
+    let searchDebounce = null;
+    el.globalSearch.addEventListener('input', (e) => {
+      clearTimeout(searchDebounce);
+      const query = e.target.value.trim();
+      if (!query) {
+        el.searchDropdown.style.display = 'none';
+        return;
+      }
+      searchDebounce = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/catalog/search?q=${encodeURIComponent(query)}&limit=6`);
+          const data = await res.json();
+          renderSearchDropdown(data.products || []);
+        } catch (err) {
+          console.error(err);
+        }
+      }, 150);
+    });
+
+    function renderSearchDropdown(items) {
+      el.searchDropdown.innerHTML = '';
+      if (!items.length) {
+        el.searchDropdown.innerHTML = `<div style="padding:0.75rem; color:var(--text-muted); font-size:0.85rem;">No matching products</div>`;
+        el.searchDropdown.style.display = 'block';
+        return;
+      }
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'search-item';
+        div.innerHTML = `
+          <span class="search-item-name">${escapeHtml(item.name)}</span>
+          <span class="search-item-cat">${escapeHtml(item.category)}</span>
+        `;
+        div.addEventListener('click', () => {
+          el.globalSearch.value = item.name;
+          el.searchDropdown.style.display = 'none';
+          loadPricing(item.slug);
+        });
+        el.searchDropdown.appendChild(div);
+      });
+      el.searchDropdown.style.display = 'block';
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.header-center')) {
+        el.searchDropdown.style.display = 'none';
+      }
+    });
+
+    // Category Tabs Filtering
+    el.categoryNav.addEventListener('click', (e) => {
+      const btn = e.target.closest('.category-pill');
+      if (!btn) return;
+      document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.activeCategory = btn.dataset.cat;
+      loadCatalog(state.activeCategory);
+    });
+
+    // Platform Filters
+    el.platformFilters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        el.platformFilters.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.activePlatform = btn.dataset.platform;
+        if (state.currentProduct) {
+          loadPricing(state.currentProduct.slug);
+        }
+      });
+    });
+
+    // Country Filter
+    el.filterCountry.addEventListener('input', (e) => {
+      state.countryFilter = e.target.value.trim();
+      renderPricingTable();
+    });
+
+    // Sort Selector
+    el.sortSelector.addEventListener('change', (e) => {
+      state.sortOrder = e.target.value;
+      renderPricingTable();
+    });
+
+    // Export Handlers (Real Blob Downloads)
+    el.btnExportCsv.addEventListener('click', () => {
+      if (!state.pricingData || !state.pricingData.records) return;
+      const headers = ['Country Code', 'Region', 'Platform', 'Local Price', 'USD Price', 'vs US %', 'Risk Level', 'Tax Info'];
+      const rows = state.pricingData.records.map(r => [
+        r.country_code,
+        `"${r.region_name.replace(/"/g, '""')}"`,
+        r.platform,
+        `"${r.primary_tier.local_price_str.replace(/"/g, '""')}"`,
+        r.primary_tier.usd_price,
+        r.vs_us_delta ?? 0,
+        r.risk_level,
+        `"${(r.tax_info || '').replace(/"/g, '""')}"`
+      ]);
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      downloadBlob(csvContent, `openrank_${state.currentProduct.slug}_pricing.csv`, 'text/csv;charset=utf-8;');
+    });
+
+    el.btnExportJson.addEventListener('click', () => {
+      if (!state.pricingData) return;
+      const jsonContent = JSON.stringify(state.pricingData, null, 2);
+      downloadBlob(jsonContent, `openrank_${state.currentProduct.slug}_pricing.json`, 'application/json');
+    });
+
+    function downloadBlob(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Watchlist Management
+    async function loadWatchlist() {
+      try {
+        const res = await fetch('/api/watchlist');
+        const data = await res.json();
+        state.watchlist = data.watchlist || [];
+        el.watchlistCount.textContent = state.watchlist.length;
+        renderWatchlistDrawer();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function toggleWatchlistCurrent() {
+      if (!state.currentProduct) return;
+      try {
+        const res = await fetch('/api/watchlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: state.currentProduct.slug })
+        });
+        const data = await res.json();
+        state.watchlist = data.watchlist || [];
+        el.watchlistCount.textContent = state.watchlist.length;
+        updateBookmarkButton();
+        renderWatchlistDrawer();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function updateBookmarkButton() {
+      if (!state.currentProduct) return;
+      const isSaved = state.watchlist.includes(state.currentProduct.slug);
+      el.btnBookmark.textContent = isSaved ? '★ Bookmarked' : '☆ Bookmark';
+      el.btnBookmark.style.borderColor = isSaved ? 'var(--gold)' : 'var(--border)';
+      el.btnBookmark.style.color = isSaved ? 'var(--gold)' : 'var(--text-main)';
+    }
+
+    function renderWatchlistDrawer() {
+      el.watchlistList.innerHTML = '';
+      if (!state.watchlist.length) {
+        el.watchlistList.innerHTML = '<div class="empty-state"><p>No items in watchlist</p></div>';
+        return;
+      }
+      state.watchlist.forEach(slug => {
+        const div = document.createElement('div');
+        div.className = 'drawer-item';
+        div.innerHTML = `
+          <strong style="text-transform: capitalize;">${escapeHtml(slug)}</strong>
+          <span style="font-size:0.75rem; color:var(--accent);">Open →</span>
+        `;
+        div.addEventListener('click', () => {
+          loadPricing(slug);
+          el.drawerWatchlist.classList.remove('open');
+        });
+        el.watchlistList.appendChild(div);
+      });
+    }
+
+    // History Management
+    async function refreshHistory() {
+      try {
+        const res = await fetch('/api/history');
+        const data = await res.json();
+        state.history = data.history || [];
+        renderHistoryDrawer();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderHistoryDrawer() {
+      el.historyList.innerHTML = '';
+      if (!state.history.length) {
+        el.historyList.innerHTML = '<div class="empty-state"><p>No search history</p></div>';
+        return;
+      }
+      state.history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'drawer-item';
+        div.innerHTML = `
+          <div>
+            <strong>${escapeHtml(item.name || item.slug)}</strong>
+            <div style="font-size:0.7rem; color:var(--text-muted);">${escapeHtml(item.category || 'Product')}</div>
+          </div>
+          <span style="font-size:0.75rem; color:var(--accent);">Load →</span>
+        `;
+        div.addEventListener('click', () => {
+          loadPricing(item.slug);
+          el.drawerHistory.classList.remove('open');
+        });
+        el.historyList.appendChild(div);
+      });
+    }
+
+    async function clearHistory() {
+      try {
+        await fetch('/api/history', { method: 'DELETE' });
+        state.history = [];
+        renderHistoryDrawer();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Settings Management
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        state.settings = data;
+        document.getElementById('setting-base-currency').value = data.base_currency || 'USD';
+        document.getElementById('setting-default-platform').value = data.default_platform || 'all';
+        document.getElementById('setting-default-country').value = data.default_country || 'US';
+        document.getElementById('setting-cache-ttl').value = data.cache_ttl_hours || 24;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function saveSettings() {
+      const payload = {
+        base_currency: document.getElementById('setting-base-currency').value,
+        default_platform: document.getElementById('setting-default-platform').value,
+        default_country: document.getElementById('setting-default-country').value.trim().toUpperCase(),
+        cache_ttl_hours: parseInt(document.getElementById('setting-cache-ttl').value, 10) || 24
+      };
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        state.settings = data.settings;
+        el.settingsSaveFeedback.style.display = 'block';
+        setTimeout(() => {
+          el.settingsSaveFeedback.style.display = 'none';
+          el.modalSettings.style.display = 'none';
+        }, 1200);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Diagnostics Telemetry Probe
+    async function runDiagnostics() {
+      el.diagOutput.textContent = 'Running live probes...';
+      try {
+        const res = await fetch('/api/diagnose');
+        const data = await res.json();
+        el.diagOutput.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        el.diagOutput.textContent = `Diagnostic Error: ${err.message}`;
+      }
+    }
+
+    // Event Bindings
+    el.btnBookmark.addEventListener('click', toggleWatchlistCurrent);
+    el.btnRefresh.addEventListener('click', () => {
+      if (state.currentProduct) loadPricing(state.currentProduct.slug, true);
+    });
+    el.btnValidateApple.addEventListener('click', probeAppleStorefront);
+
+    el.btnSettingsToggle.addEventListener('click', () => {
+      el.modalSettings.style.display = 'flex';
+    });
+    el.btnCloseSettings.addEventListener('click', () => { el.modalSettings.style.display = 'none'; });
+    el.btnCancelSettings.addEventListener('click', () => { el.modalSettings.style.display = 'none'; });
+    el.btnSaveSettings.addEventListener('click', saveSettings);
+
+    el.btnHistoryToggle.addEventListener('click', () => {
+      refreshHistory();
+      el.drawerHistory.classList.add('open');
+    });
+    el.btnCloseHistory.addEventListener('click', () => { el.drawerHistory.classList.remove('open'); });
+    el.btnClearHistory.addEventListener('click', clearHistory);
+
+    el.btnWatchlistToggle.addEventListener('click', () => {
+      loadWatchlist();
+      el.drawerWatchlist.classList.add('open');
+    });
+    el.btnCloseWatchlist.addEventListener('click', () => { el.drawerWatchlist.classList.remove('open'); });
+
+    el.btnDiagToggle.addEventListener('click', () => {
+      el.modalDiag.style.display = 'flex';
+      runDiagnostics();
+    });
+    el.btnCloseDiag.addEventListener('click', () => { el.modalDiag.style.display = 'none'; });
+    el.btnRunDiag.addEventListener('click', runDiagnostics);
+
+    el.brandLogoBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loadCatalog('all');
+      document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
+      document.querySelector('.category-pill[data-cat="all"]').classList.add('active');
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Initial Bootstrap
+    (async function init() {
+      await checkHealth();
+      await loadSettings();
+      await loadWatchlist();
+      await refreshHistory();
+      await loadCatalog('all');
+      
+      // Auto-load Gemini on start for instant gratification
+      await loadPricing('gemini');
+    })();
+  </script>
+</body>
+</html>
