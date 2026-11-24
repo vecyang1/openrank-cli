@@ -66,12 +66,14 @@ class HTMLNode:
         self.parent = parent
 
     def text(self) -> str:
-        """Collect and unescape all recursive text children."""
+        """Collect and unescape all recursive text children, skipping script/style blocks."""
         parts: List[str] = []
         for child in self.children:
             if isinstance(child, str):
                 parts.append(child)
             elif isinstance(child, HTMLNode):
+                if child.tag in ("script", "style"):
+                    continue
                 parts.append(child.text())
         joined = " ".join("".join(parts).split())
         return html.unescape(joined)
@@ -288,31 +290,56 @@ class PricingEngine:
         platforms_found: List[str] = []
 
         for t_idx, table in enumerate(tables):
+            if self._is_comparison_summary_table(table):
+                continue
             table_platform = self._determine_table_platform(table, t_idx)
+            records = self._parse_table_rows(table, table_platform)
+            if not records:
+                continue
             if table_platform not in platforms_found:
                 platforms_found.append(table_platform)
-
-            records = self._parse_table_rows(table, table_platform)
             all_records.extend(records)
 
-        # Baseline resolution
+        # Baseline resolution (global US primary baseline + per-platform per-tier US baselines)
         baseline_us_price: Optional[float] = None
+        us_tier_prices_by_platform: Dict[str, Dict[str, float]] = {}
         for r in all_records:
             if r.country_code.upper() == "US":
-                baseline_us_price = r.primary_tier.usd_price
-                break
+                if baseline_us_price is None:
+                    baseline_us_price = r.primary_tier.usd_price
+                plat_map = us_tier_prices_by_platform.setdefault(r.platform, {})
+                if r.primary_tier.usd_price > 0 and r.primary_tier.name not in plat_map:
+                    plat_map[r.primary_tier.name] = r.primary_tier.usd_price
+                for t_name, t_obj in r.additional_tiers.items():
+                    if t_obj.usd_price > 0 and t_name not in plat_map:
+                        plat_map[t_name] = t_obj.usd_price
 
         if baseline_us_price is None and page_baseline is not None:
             baseline_us_price = page_baseline
 
-        # Compute dynamic deltas if missing and baseline is available
-        if baseline_us_price is not None and baseline_us_price > 0:
-            for r in all_records:
-                if r.vs_us_delta is None:
-                    calc_delta = round(((r.primary_tier.usd_price - baseline_us_price) / baseline_us_price) * 100, 1)
-                    r.vs_us_delta = calc_delta
-                if r.primary_tier.delta_percent is None:
-                    r.primary_tier.delta_percent = r.vs_us_delta
+        # Derive missing per-tier deltas from same-platform US tier prices (SSOT)
+        for r in all_records:
+            plat_us = us_tier_prices_by_platform.get(r.platform, {})
+            if r.primary_tier.delta_percent is None:
+                us_primary = plat_us.get(r.primary_tier.name)
+                if us_primary is None and r.vs_us_delta is None:
+                    us_primary = baseline_us_price
+                if us_primary is not None and us_primary > 0:
+                    r.primary_tier.delta_percent = round(
+                        ((r.primary_tier.usd_price - us_primary) / us_primary) * 100, 1
+                    )
+            for t_name, t_obj in r.additional_tiers.items():
+                if t_obj.delta_percent is None:
+                    us_tier_price = plat_us.get(t_name)
+                    if us_tier_price is not None and us_tier_price > 0:
+                        t_obj.delta_percent = round(
+                            ((t_obj.usd_price - us_tier_price) / us_tier_price) * 100, 1
+                        )
+            # Keep record-level vs_us_delta strictly aligned with primary_tier
+            if r.primary_tier.delta_percent is not None:
+                r.vs_us_delta = r.primary_tier.delta_percent
+            elif r.vs_us_delta is not None:
+                r.primary_tier.delta_percent = r.vs_us_delta
 
         # Apply filtering
         filtered_records = self._filter_records(
@@ -334,6 +361,28 @@ class PricingEngine:
         result = self.parse_pricing_html(html, product=product, platform="all")
         return result.records
 
+    @staticmethod
+    def _extract_table_headers(table: HTMLNode) -> List[str]:
+        """Extract column header texts from <thead> (or the first header row), ignoring <tbody th>."""
+        thead = table.find("thead")
+        if thead:
+            return [h.text().strip() for h in thead.find_all("th")]
+        for tr in table.find_all("tr"):
+            ths = tr.find_all("th")
+            if ths and not tr.find_all("td"):
+                return [h.text().strip() for h in ths]
+        return [h.text().strip() for h in table.find_all("th")]
+
+    def _is_comparison_summary_table(self, table: HTMLNode) -> bool:
+        """Return True for cross-platform summary comparison tables (e.g. Play vs App Store)."""
+        cls_tokens = set(table.attrs.get("class", "").lower().split())
+        if "gpvs__table" in cls_tokens:
+            return True
+        headers_lower = [h.lower() for h in self._extract_table_headers(table)]
+        if any("play vs app store" in h or "app store vs" in h for h in headers_lower):
+            return True
+        return False
+
     def _determine_table_platform(self, table: HTMLNode, t_idx: int) -> str:
         """Determine platform context ('appstore', 'play', 'web', 'direct') for a table."""
         # 1. Attribute check on table
@@ -354,9 +403,30 @@ class PricingEngine:
         if "web" in combined:
             return "web"
 
-        # 2. Check enclosing parent or previous headings
+        # 2. Row-level platform hint (OpenTheRank encodes 'play:...' in data-vs-prices on Google Play tables)
+        for tr in table.find_all("tr"):
+            vs_prices = tr.attrs.get("data-vs-prices", "").strip().lower()
+            if vs_prices:
+                if vs_prices.startswith("play:") or ",play:" in vs_prices:
+                    return "play"
+                break
+
+        # 3. Cell-level snapshot aria-label hint (e.g. 'See what the Brazil App Store listed...')
+        snap_el = table.find(class_="ctl-snap")
+        if snap_el:
+            aria = snap_el.attrs.get("aria-label", "").lower()
+            if "google play" in aria or "play store" in aria:
+                return "play"
+            if "app store" in aria:
+                return "appstore"
+
+        # 4. Check enclosing ancestors, stopping before containers that hold multiple tables
         curr = table.parent
         while curr and curr.tag != "root":
+            anc_dp = curr.attrs.get("data-platform", "").strip().lower()
+            if anc_dp:
+                return self._normalize_platform(anc_dp)
+
             section_id = curr.attrs.get("id", "").lower()
             if "appstore" in section_id:
                 return "appstore"
@@ -367,20 +437,23 @@ class PricingEngine:
             if "web" in section_id:
                 return "web"
 
-            # Check headings in parent
+            # Stop scanning headings once an ancestor wraps multiple pricing tables
+            if len(curr.find_all("table")) > 1:
+                break
+
             for h in curr.find_all("h2") + curr.find_all("h3") + curr.find_all("h4"):
                 h_text = h.text().lower()
-                if "app store" in h_text:
-                    return "appstore"
                 if "google play" in h_text or "play store" in h_text:
                     return "play"
+                if "app store" in h_text:
+                    return "appstore"
                 if "direct" in h_text or "hardware" in h_text:
                     return "direct"
                 if "web" in h_text:
                     return "web"
             curr = curr.parent
 
-        # 3. Default index fallback: Table 0 = App Store, Table 1 = Google Play
+        # 5. Default index fallback: Table 0 = App Store, Table 1 = Google Play
         if t_idx == 0:
             return "appstore"
         if t_idx == 1:
@@ -402,13 +475,13 @@ class PricingEngine:
         """Extract regional pricing records from table rows."""
         records: List[RegionPricingRecord] = []
 
-        # Parse column headers
-        header_nodes = table.find_all("th")
-        col_names: List[str] = [h.text().strip() for h in header_nodes]
+        # Parse column headers from <thead> / header row only
+        col_names: List[str] = self._extract_table_headers(table)
 
         # Identify tier columns and other column roles
         tier_cols: List[Tuple[int, str]] = []
-        delta_col_idx: Optional[int] = None
+        delta_cols: List[Tuple[int, str]] = []
+        snapshot_col_idx: Optional[int] = None
         tax_col_idx: Optional[int] = None
         risk_col_idx: Optional[int] = None
         cc_col_idx: Optional[int] = None
@@ -419,6 +492,8 @@ class PricingEngine:
             "vs us %", "vs us", "delta", "% diff", "discount",
             "tax", "vat", "tax info",
             "risk", "payment risk", "risk level",
+            "tools", "tool", "action", "actions", "links", "vpn", "get vpn", "address",
+            "data snapshot", "snapshot", "captured", "updated", "last updated",
         }
 
         for idx, col in enumerate(col_names):
@@ -430,7 +505,11 @@ class PricingEngine:
             elif col_lower in ("country", "region"):
                 region_col_idx = idx
             elif any(k in col_lower for k in ("vs us", "delta", "diff")):
-                delta_col_idx = idx
+                delta_cols.append((idx, col))
+            elif any(k in col_lower for k in ("snapshot", "captured", "last updated")):
+                snapshot_col_idx = idx
+            elif col_lower in ("tools", "tool", "actions", "action", "links", "vpn", "get vpn", "address"):
+                pass
             elif "tax" in col_lower or "vat" in col_lower:
                 tax_col_idx = idx
             elif "risk" in col_lower:
@@ -454,13 +533,17 @@ class PricingEngine:
             # 2. Extract Region Name
             region_name = self._extract_region_name(tr, td_cells, region_col_idx, cc)
 
-            # 3. Extract Price Tiers
-            primary_tier, additional_tiers = self._extract_tiers(tr, td_cells, tier_cols)
-            if not primary_tier:
+            # 3. Extract Price Tiers (with column indices for per-tier delta alignment)
+            indexed_tiers = self._extract_indexed_tiers(tr, td_cells, tier_cols)
+            if not indexed_tiers:
                 continue
+            primary_tier = indexed_tiers[0][1]
+            additional_tiers: Dict[str, PriceTier] = {
+                t.name: t for _, t in indexed_tiers[1:]
+            }
 
-            # 4. Extract Delta %
-            delta = self._extract_delta(tr, td_cells, delta_col_idx)
+            # 4. Extract & bind per-tier Delta %
+            delta = self._apply_tier_deltas(tr, td_cells, indexed_tiers, delta_cols)
 
             # 5. Extract Tax Info
             tax_info = self._extract_tax(tr, td_cells, tax_col_idx)
@@ -468,8 +551,8 @@ class PricingEngine:
             # 6. Extract Risk Level and Note
             risk_level, risk_note = self._extract_risk(tr, td_cells, risk_col_idx)
 
-            # 7. Snapshot date
-            snapshot_date = tr.attrs.get("data-snapshot", "")
+            # 7. Snapshot date (row attribute or Data snapshot column / .ctl-snap)
+            snapshot_date = self._extract_snapshot_date(tr, td_cells, snapshot_col_idx)
 
             records.append(
                 RegionPricingRecord(
@@ -560,6 +643,77 @@ class PricingEngine:
         # Fallback to known mapping
         return CODE_TO_COUNTRY_NAME.get(country_code, country_code)
 
+    @staticmethod
+    def _is_non_tier_cell(cell: HTMLNode) -> bool:
+        """Defense-in-depth check to prevent Tools or Snapshot cells from becoming price tiers."""
+        cls_tokens = set(cell.attrs.get("class", "").lower().split())
+        if cls_tokens & {"ctl-snap-td", "ctl-td-address", "ctl-has-vpn", "ctl-tax"}:
+            return True
+        if cell.find(class_="ctl-snap") or cell.find(class_="ctl-vpn-cta"):
+            return True
+        return False
+
+    def _extract_indexed_tiers(
+        self,
+        tr: HTMLNode,
+        td_cells: List[HTMLNode],
+        tier_cols: List[Tuple[int, str]],
+    ) -> List[Tuple[int, PriceTier]]:
+        """Extract PriceTier items along with their column indices."""
+        extracted: List[Tuple[int, PriceTier]] = []
+
+        if tier_cols:
+            for idx, col_name in tier_cols:
+                if idx < len(td_cells):
+                    cell = td_cells[idx]
+                    if self._is_non_tier_cell(cell):
+                        continue
+
+                    p_elem = cell.find(class_="ctl-price-local") or cell.find(class_="ctl-local")
+                    local_price = p_elem.text().strip() if p_elem else cell.text().strip()
+
+                    if "data-otr-usd" in cell.attrs:
+                        usd_price = _parse_usd_price(cell.attrs["data-otr-usd"])
+                    else:
+                        pill_elem = cell.find(class_="ctl-pill")
+                        usd_source = pill_elem.text().strip() if pill_elem else cell.text().strip()
+                        usd_price = _parse_usd_price(usd_source)
+
+                    tier_name = cell.attrs.get("data-plan") or col_name
+                    if usd_price > 0 or local_price:
+                        extracted.append(
+                            (
+                                idx,
+                                PriceTier(
+                                    name=tier_name,
+                                    local_price_str=local_price,
+                                    usd_price=usd_price,
+                                ),
+                            )
+                        )
+        else:
+            # Fallback: scan all cells for data-otr-usd or data-plan
+            for idx, cell in enumerate(td_cells):
+                if self._is_non_tier_cell(cell):
+                    continue
+                if "data-otr-usd" in cell.attrs or "data-plan" in cell.attrs:
+                    tier_name = cell.attrs.get("data-plan", "Standard")
+                    usd_price = _parse_usd_price(cell.attrs.get("data-otr-usd", "0"))
+                    p_elem = cell.find(class_="ctl-price-local") or cell.find(class_="ctl-local")
+                    local_price = p_elem.text().strip() if p_elem else cell.text().strip()
+                    extracted.append(
+                        (
+                            idx,
+                            PriceTier(
+                                name=tier_name,
+                                local_price_str=local_price,
+                                usd_price=usd_price,
+                            ),
+                        )
+                    )
+
+        return extracted
+
     def _extract_tiers(
         self,
         tr: HTMLNode,
@@ -567,59 +721,156 @@ class PricingEngine:
         tier_cols: List[Tuple[int, str]],
     ) -> Tuple[Optional[PriceTier], Dict[str, PriceTier]]:
         """Extract primary PriceTier and additional_tiers dictionary."""
-        extracted: List[PriceTier] = []
-
-        if tier_cols:
-            for idx, col_name in tier_cols:
-                if idx < len(td_cells):
-                    cell = td_cells[idx]
-                    local_price = ""
-                    p_elem = cell.find(class_="ctl-price-local")
-                    if p_elem:
-                        local_price = p_elem.text().strip()
-                    else:
-                        local_price = cell.text().strip()
-
-                    usd_price = 0.0
-                    if "data-otr-usd" in cell.attrs:
-                        usd_price = _parse_usd_price(cell.attrs["data-otr-usd"])
-                    else:
-                        usd_price = _parse_usd_price(local_price)
-
-                    tier_name = cell.attrs.get("data-plan") or col_name
-                    if usd_price > 0 or local_price:
-                        extracted.append(
-                            PriceTier(
-                                name=tier_name,
-                                local_price_str=local_price,
-                                usd_price=usd_price,
-                            )
-                        )
-        else:
-            # Fallback: scan all cells for data-otr-usd or data-plan
-            for cell in td_cells:
-                if "data-otr-usd" in cell.attrs or "data-plan" in cell.attrs:
-                    tier_name = cell.attrs.get("data-plan", "Standard")
-                    usd_price = _parse_usd_price(cell.attrs.get("data-otr-usd", "0"))
-                    p_elem = cell.find(class_="ctl-price-local")
-                    local_price = p_elem.text().strip() if p_elem else cell.text().strip()
-                    extracted.append(
-                        PriceTier(
-                            name=tier_name,
-                            local_price_str=local_price,
-                            usd_price=usd_price,
-                        )
-                    )
-
+        extracted = self._extract_indexed_tiers(tr, td_cells, tier_cols)
         if not extracted:
             return None, {}
 
-        primary = extracted[0]
-        additional: Dict[str, PriceTier] = {}
-        for tier in extracted[1:]:
-            additional[tier.name] = tier
-
+        primary = extracted[0][1]
+        additional: Dict[str, PriceTier] = {tier.name: tier for _, tier in extracted[1:]}
         return primary, additional
+
+    @staticmethod
+    def _extract_cell_delta(cell: HTMLNode) -> Optional[float]:
+        """Extract numeric percentage delta from a single delta table cell."""
+        delta_el = cell.find(class_="ctl-delta")
+        if delta_el:
+            return _parse_delta_percent(delta_el.text())
+        if "data-delta" in cell.attrs:
+            return _parse_delta_percent(cell.attrs["data-delta"])
+        return _parse_delta_percent(cell.text())
+
+    @staticmethod
+    def _match_delta_target_tier(
+        d_idx: int,
+        d_header: str,
+        cell: HTMLNode,
+        indexed_tiers: List[Tuple[int, PriceTier]],
+        total_delta_cols: int,
+    ) -> Optional[PriceTier]:
+        """Bind a delta cell to the exact PriceTier it describes."""
+        if not indexed_tiers:
+            return None
+
+        # 1. Explicit data-vs-x-cell slug (e.g. 'ultra' -> 'Google AI Ultra')
+        x_key = cell.attrs.get("data-vs-x-cell", "").strip().lower()
+        if x_key:
+            x_norm = re.sub(r"[^a-z0-9]+", " ", x_key).strip()
+            for _, tier in indexed_tiers:
+                t_norm = re.sub(r"[^a-z0-9]+", " ", tier.name.lower()).strip()
+                if t_norm == x_norm or t_norm.endswith(f" {x_norm}") or x_norm in t_norm.split():
+                    return tier
+            for _, tier in indexed_tiers:
+                if x_norm in tier.name.lower():
+                    return tier
+
+        # 2. Explicit tier name embedded in column header (e.g. 'VS US Price Google AI Ultra')
+        hdr_clean = re.sub(
+            r"\b(?:vs\s*us(?:\s*price)?|delta|diff|lowest|highest)\b|%",
+            " ",
+            d_header.lower(),
+        )
+        hdr_clean = " ".join(hdr_clean.split())
+        if hdr_clean:
+            for _, tier in indexed_tiers:
+                t_lower = tier.name.lower().strip()
+                if t_lower == hdr_clean or t_lower in hdr_clean or hdr_clean in t_lower:
+                    return tier
+
+        # 3. Explicit data-vs-usd price binding (e.g. data-vs-usd='16.3' -> Google AI Pro $16.30)
+        if "data-vs-usd" in cell.attrs:
+            vs_usd = _parse_usd_price(cell.attrs["data-vs-usd"])
+            if vs_usd > 0:
+                candidates = [
+                    (t_idx, tier)
+                    for t_idx, tier in indexed_tiers
+                    if abs(tier.usd_price - vs_usd) <= 0.02
+                ]
+                if len(candidates) == 1:
+                    return candidates[0][1]
+                if len(candidates) > 1:
+                    # Prefer the closest preceding tier column
+                    preceding = [c for c in candidates if c[0] < d_idx]
+                    if preceding:
+                        return max(preceding, key=lambda c: c[0])[1]
+                    return candidates[0][1]
+
+        # 4. Legacy single trailing delta column without per-tier attributes -> primary_tier
+        if total_delta_cols == 1:
+            return indexed_tiers[0][1]
+
+        # 5. Multiple unnamed delta columns -> immediately preceding tier column
+        preceding_tiers = [(t_idx, tier) for t_idx, tier in indexed_tiers if t_idx < d_idx]
+        if preceding_tiers:
+            return max(preceding_tiers, key=lambda c: c[0])[1]
+        return indexed_tiers[0][1]
+
+    def _apply_tier_deltas(
+        self,
+        tr: HTMLNode,
+        td_cells: List[HTMLNode],
+        indexed_tiers: List[Tuple[int, PriceTier]],
+        delta_cols: List[Tuple[int, str]],
+    ) -> Optional[float]:
+        """Bind all HTML delta columns to their exact PriceTier and return primary_tier delta."""
+        if delta_cols:
+            for d_idx, d_header in delta_cols:
+                if d_idx >= len(td_cells):
+                    continue
+                cell = td_cells[d_idx]
+                val = self._extract_cell_delta(cell)
+                if val is None:
+                    continue
+                target = self._match_delta_target_tier(
+                    d_idx=d_idx,
+                    d_header=d_header,
+                    cell=cell,
+                    indexed_tiers=indexed_tiers,
+                    total_delta_cols=len(delta_cols),
+                )
+                if target is not None and target.delta_percent is None:
+                    target.delta_percent = val
+            return indexed_tiers[0][1].delta_percent
+
+        # Fallback for tables without delta column headers (attribute/class-only rows)
+        fallback = self._extract_delta(tr, td_cells, None)
+        if fallback is not None and indexed_tiers:
+            indexed_tiers[0][1].delta_percent = fallback
+        return fallback
+
+    def _extract_snapshot_date(
+        self,
+        tr: HTMLNode,
+        td_cells: List[HTMLNode],
+        snapshot_col_idx: Optional[int],
+    ) -> str:
+        """Extract ISO snapshot date from row attribute, .ctl-snap metadata, or Data snapshot cell."""
+        attr_snap = tr.attrs.get("data-snapshot", "").strip()
+        if attr_snap:
+            return attr_snap
+
+        snap_el = tr.find(class_="ctl-snap")
+        if snap_el:
+            data_date = snap_el.attrs.get("data-date", "").strip()
+            if data_date:
+                return data_date
+            data_at = snap_el.attrs.get("data-at", "").strip()
+            if data_at:
+                return data_at.split()[0]
+
+        if snapshot_col_idx is not None and snapshot_col_idx < len(td_cells):
+            cell = td_cells[snapshot_col_idx]
+            inner_snap = cell.find(class_="ctl-snap")
+            if inner_snap:
+                if inner_snap.attrs.get("data-date", "").strip():
+                    return inner_snap.attrs["data-date"].strip()
+                if inner_snap.attrs.get("data-at", "").strip():
+                    return inner_snap.attrs["data-at"].strip().split()[0]
+            raw_txt = cell.text().strip()
+            cleaned = re.sub(r"^captured\s+", "", raw_txt, flags=re.IGNORECASE).strip()
+            if cleaned:
+                return cleaned
+
+        return ""
 
     def _extract_delta(
         self,

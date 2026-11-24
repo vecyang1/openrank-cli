@@ -416,6 +416,130 @@ class TestPricingEngine(unittest.TestCase):
         self.assertEqual(res.records[1].platform, "play")
         self.assertEqual(res.records[2].platform, "web")
 
+    def test_2026_live_layout_filters_tools_captures_snapshot_and_aligns_per_tier_deltas(self) -> None:
+        """Assert 2026 OpenTheRank table layout: Tools excluded, Data snapshot -> snapshot_date, per-tier deltas aligned, gpvs skipped."""
+        live_like_html = """
+        <main class="ps-main">
+          <h2>App Store Region Prices</h2>
+          <div class="ctl-wrap">
+            <table class="w-full">
+              <thead>
+                <tr>
+                  <th>Region</th>
+                  <th>Google AI Plus</th>
+                  <th>Google AI Pro</th>
+                  <th>VS US Price</th>
+                  <th>Google AI Ultra</th>
+                  <th>VS US Price Google AI Ultra</th>
+                  <th>Data snapshot</th>
+                  <th>Tax<span>tooltip</span><script>function n(){return "ignored";}</script></th>
+                  <th>Risk</th>
+                  <th>Tools</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ctl-row" data-cc="BR" data-vs-prices="plus:4.2,pro:16.3,ultra:168.18">
+                  <td class="ctl-td ctl-td-region">Brazil</td>
+                  <td class="ctl-td"><span class="ctl-pill">$4.20</span><span class="ctl-local">≈ R$ 24,99/mo</span></td>
+                  <td class="ctl-td"><span class="ctl-pill">$16.30</span><span class="ctl-local">≈ R$ 96,90/mo</span></td>
+                  <td class="ctl-td" data-vs-usd="16.3"><span class="ctl-delta">-18%</span></td>
+                  <td class="ctl-td"><span class="ctl-pill">$168.18</span><span class="ctl-local">≈ R$ 999,90/mo</span></td>
+                  <td class="ctl-td" data-vs-x-cell="ultra"><span class="ctl-delta">-16%</span></td>
+                  <td class="ctl-td ctl-snap-td"><button class="ctl-snap" data-date="2026-11-23" data-at="2026-11-23 10:41" aria-label="See what the Brazil App Store listed on 2026-11-23">Captured 11-23</button></td>
+                  <td class="ctl-td ctl-tax"><span class="ctl-cell-clamp">State tax (ICMS) varies 7-25%</span></td>
+                  <td class="ctl-td"><span class="ctl-risk">Medium</span><span class="ctl-risk-note">May require local billing address</span></td>
+                  <td class="ctl-td ctl-td-address ctl-has-vpn"><a class="ctl-vpn-cta">Get VPN</a><a>Get Address</a></td>
+                </tr>
+                <tr class="ctl-row" data-cc="US" data-vs-prices="plus:4.99,pro:19.99,ultra:199.99">
+                  <td class="ctl-td ctl-td-region">United States</td>
+                  <td class="ctl-td"><span class="ctl-pill">$4.99</span><span class="ctl-local">≈ $4.99/mo</span></td>
+                  <td class="ctl-td"><span class="ctl-pill">$19.99</span><span class="ctl-local">≈ $19.99/mo</span></td>
+                  <td class="ctl-td" data-vs-usd="19.99"><span class="ctl-delta">0%</span></td>
+                  <td class="ctl-td"><span class="ctl-pill">$199.99</span><span class="ctl-local">≈ $199.99/mo</span></td>
+                  <td class="ctl-td" data-vs-x-cell="ultra"><span class="ctl-delta">0%</span></td>
+                  <td class="ctl-td ctl-snap-td"><button class="ctl-snap" data-date="2026-11-23">Captured 11-23</button></td>
+                  <td class="ctl-td ctl-tax"><span class="ctl-cell-clamp">Sales tax varies</span></td>
+                  <td class="ctl-td"><span class="ctl-risk">Low</span></td>
+                  <td class="ctl-td ctl-td-address"><a class="ctl-vpn-cta">Get VPN</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="ctl-wrap">
+            <table class="w-full">
+              <thead>
+                <tr>
+                  <th>Region</th>
+                  <th>Price</th>
+                  <th>VS US Price Lowest</th>
+                  <th>Tax</th>
+                  <th>Risk</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ctl-row" data-cc="TR" data-vs-prices="play:entry:0.11,play:top:177.92">
+                  <td>Turkey</td>
+                  <td><span class="ctl-pill">$0.11 – $177.92</span><span class="ctl-local">≈ TRY 5.39 – 8,999.99</span></td>
+                  <td data-vs-usd="0.11"><span class="ctl-delta">-88%</span></td>
+                  <td class="ctl-tax">20% VAT included</td>
+                  <td><span class="ctl-risk">Medium</span></td>
+                </tr>
+                <tr class="ctl-row" data-cc="US" data-vs-prices="play:entry:0.89,play:top:199.99">
+                  <td>United States</td>
+                  <td><span class="ctl-pill">$0.89 – $199.99</span><span class="ctl-local">≈ $0.89 – $199.99</span></td>
+                  <td data-vs-usd="0.89"><span class="ctl-delta">0%</span></td>
+                  <td class="ctl-tax">Sales tax varies</td>
+                  <td><span class="ctl-risk">Low</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <section class="gpvs">
+            <table class="gpvs__table">
+              <thead><tr><th>Region</th><th>Google Play</th><th>App Store</th><th>Play vs App Store</th></tr></thead>
+              <tbody><tr><th>Brazil</th><td>$18.50</td><td>$21.85</td><td>-15%</td></tr></tbody>
+            </table>
+          </section>
+        </main>
+        """
+        gemini_prod = ProductSummary(
+            name="Gemini",
+            slug="gemini",
+            path="/ai-pricing/gemini/",
+            category="AI Subscriptions",
+            url="https://opentherank.com/ai-pricing/gemini/",
+        )
+        res = self.engine.parse_pricing_html(live_like_html, gemini_prod, platform="all")
+
+        # Only App Store + Google Play platforms (gpvs__table summary skipped, no phantom 'web')
+        self.assertEqual(res.platforms, ["appstore", "play"])
+        self.assertEqual(len(res.records), 4)
+
+        br_app = next(r for r in res.records if r.country_code == "BR" and r.platform == "appstore")
+        self.assertEqual(br_app.snapshot_date, "2026-11-23")
+        self.assertEqual(set(br_app.additional_tiers.keys()), {"Google AI Pro", "Google AI Ultra"})
+        self.assertNotIn("Tools", br_app.additional_tiers)
+        self.assertNotIn("Data snapshot", br_app.additional_tiers)
+
+        # Primary tier (Google AI Plus) gets its own computed delta vs US $4.99 (-15.8%), NOT Pro's -18.0%
+        self.assertEqual(br_app.primary_tier.name, "Google AI Plus")
+        self.assertAlmostEqual(br_app.primary_tier.usd_price, 4.20, places=2)
+        self.assertEqual(br_app.primary_tier.local_price_str, "≈ R$ 24,99/mo")
+        self.assertEqual(br_app.primary_tier.delta_percent, -15.8)
+        self.assertEqual(br_app.vs_us_delta, -15.8)
+
+        # Per-tier deltas bound accurately to Pro (-18.0%) and Ultra (-16.0%)
+        self.assertEqual(br_app.additional_tiers["Google AI Pro"].delta_percent, -18.0)
+        self.assertEqual(br_app.additional_tiers["Google AI Pro"].local_price_str, "≈ R$ 96,90/mo")
+        self.assertEqual(br_app.additional_tiers["Google AI Ultra"].delta_percent, -16.0)
+        self.assertEqual(br_app.additional_tiers["Google AI Ultra"].local_price_str, "≈ R$ 999,90/mo")
+
+        # Google Play table classified as 'play' despite ancestor <main> having an App Store heading
+        tr_play = next(r for r in res.records if r.country_code == "TR" and r.platform == "play")
+        self.assertAlmostEqual(tr_play.primary_tier.usd_price, 0.11, places=2)
+        self.assertEqual(tr_play.primary_tier.delta_percent, -88.0)
+        self.assertEqual(tr_play.vs_us_delta, -88.0)
+
 
 if __name__ == "__main__":
     unittest.main()

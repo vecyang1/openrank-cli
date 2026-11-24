@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import http.client
+import os
+import socket
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 
 class HttpError(Exception):
@@ -63,6 +65,48 @@ def _safe_close(err: Any) -> None:
         pass
 
 
+def _is_dns_failure(err: BaseException) -> bool:
+    """Return True when a connection exception is caused by local DNS resolution failure."""
+    if isinstance(err, socket.gaierror):
+        return True
+    if isinstance(err, urllib.error.URLError) and isinstance(err.reason, socket.gaierror):
+        return True
+    msg = str(err).lower()
+    return any(
+        token in msg
+        for token in (
+            "nodename nor servname",
+            "name or service not known",
+            "temporary failure in name resolution",
+            "getaddrinfo failed",
+            "failed to resolve",
+        )
+    )
+
+
+def _should_skip_proxy_fallback(url: str) -> bool:
+    """Never route loopback or RFC-2606 reserved test hostnames through a local proxy."""
+    host = (urllib.parse.urlsplit(url).hostname or "").strip().lower()
+    if not host or host in ("localhost", "127.0.0.1", "::1"):
+        return True
+    return host.endswith((".invalid", ".localhost", ".test", ".example"))
+
+
+def _detect_local_fallback_proxy() -> Optional[str]:
+    """Return explicit proxy env or active localhost proxy (7897/7890) on DNS failure."""
+    for key in ("OPENRANK_PROXY", "HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy", "ALL_PROXY", "all_proxy"):
+        val = (os.environ.get(key) or "").strip()
+        if val:
+            return val
+    for port in (7897, 7890):
+        try:
+            with socket.create_connection(("127.0.0.1", port), timeout=0.2):
+                return f"http://127.0.0.1:{port}"
+        except OSError:
+            continue
+    return None
+
+
 class HttpClient:
     """Production-grade stdlib HTTP client with deterministic fast-fail and redirect protection."""
 
@@ -91,6 +135,38 @@ class HttpClient:
         self._default_opener = urllib.request.build_opener()
         self._no_redirect_opener = urllib.request.build_opener(NoRedirectHandler)
 
+    def _build_proxy_opener(self, proxy_url: str, follow_redirects: bool) -> urllib.request.OpenerDirector:
+        proxy_handler = urllib.request.ProxyHandler({"http": proxy_url, "https": proxy_url})
+        if follow_redirects:
+            return urllib.request.build_opener(proxy_handler)
+        return urllib.request.build_opener(proxy_handler, NoRedirectHandler)
+
+    def _open_with_dns_proxy_fallback(
+        self,
+        req: urllib.request.Request,
+        url: str,
+        follow_redirects: bool,
+    ) -> Any:
+        opener = self._default_opener if follow_redirects else self._no_redirect_opener
+        try:
+            return opener.open(req, timeout=self.timeout)
+        except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException) as first_err:
+            if not _is_dns_failure(first_err) or _should_skip_proxy_fallback(url):
+                raise
+            proxy_url = _detect_local_fallback_proxy()
+            if not proxy_url:
+                raise
+            proxy_opener = self._build_proxy_opener(proxy_url, follow_redirects=follow_redirects)
+            try:
+                return proxy_opener.open(req, timeout=self.timeout)
+            except urllib.error.HTTPError as proxy_http_err:
+                if proxy_http_err.code in (502, 503, 504):
+                    _safe_close(proxy_http_err)
+                    raise first_err from proxy_http_err
+                raise
+            except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException):
+                raise first_err
+
     def _prepare_request(
         self,
         url: str,
@@ -114,10 +190,9 @@ class HttpClient:
         Raises NetworkError on connection/timeout issues.
         """
         req = self._prepare_request(url, headers)
-        opener = self._default_opener if follow_redirects else self._no_redirect_opener
 
         try:
-            with opener.open(req, timeout=self.timeout) as resp:
+            with self._open_with_dns_proxy_fallback(req, url, follow_redirects=follow_redirects) as resp:
                 status_code = getattr(resp, "status", getattr(resp, "code", 200))
                 resp_headers = {k: v for k, v in resp.headers.items()}
                 body = resp.read()
@@ -155,7 +230,7 @@ class HttpClient:
         """Probe URL redirects without following to detect destination changes."""
         req = self._prepare_request(url)
         try:
-            with self._no_redirect_opener.open(req, timeout=self.timeout) as resp:
+            with self._open_with_dns_proxy_fallback(req, url, follow_redirects=False) as resp:
                 code = getattr(resp, "status", getattr(resp, "code", 200))
                 location = resp.headers.get("Location")
                 return code, location
@@ -187,7 +262,7 @@ class HttpClient:
         """
         req = self._prepare_request(url)
         try:
-            with self._no_redirect_opener.open(req, timeout=self.timeout) as resp:
+            with self._open_with_dns_proxy_fallback(req, url, follow_redirects=False) as resp:
                 status_code = getattr(resp, "status", getattr(resp, "code", 200))
                 location = resp.headers.get("Location")
                 body = resp.read()

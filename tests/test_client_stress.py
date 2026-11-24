@@ -475,5 +475,50 @@ class TestEmpiricalChallengerFindings(unittest.TestCase):
         # Both currently False: only present as methods on HttpClient class
 
 
+class TestDnsProxyFallback(unittest.TestCase):
+    """Verify transparent local proxy fallback on DNS failure without breaking reserved hosts."""
+
+    def test_dns_failure_retries_via_detected_proxy(self) -> None:
+        from unittest.mock import MagicMock, patch
+        import socket
+        import urllib.error
+
+        client = HttpClient(timeout=2.0)
+        dns_err = urllib.error.URLError(socket.gaierror(8, "nodename nor servname provided, or not known"))
+
+        fake_resp = MagicMock()
+        fake_resp.status = 200
+        fake_resp.headers = {"Content-Type": "text/html"}
+        fake_resp.read.return_value = b"<html>ok</html>"
+        fake_resp.__enter__.return_value = fake_resp
+        fake_resp.__exit__.return_value = None
+
+        fake_proxy_opener = MagicMock()
+        fake_proxy_opener.open.return_value = fake_resp
+
+        with patch.object(client._default_opener, "open", side_effect=dns_err), \
+             patch("openrank.client._detect_local_fallback_proxy", return_value="http://127.0.0.1:7897"), \
+             patch.object(client, "_build_proxy_opener", return_value=fake_proxy_opener) as build_mock:
+            code, _, body = client.get("https://opentherank.com/ai-pricing/gemini/")
+
+        self.assertEqual(code, 200)
+        self.assertEqual(body, b"<html>ok</html>")
+        build_mock.assert_called_once_with("http://127.0.0.1:7897", follow_redirects=True)
+
+    def test_reserved_invalid_domain_skips_proxy_fallback(self) -> None:
+        from unittest.mock import patch
+        import socket
+        import urllib.error
+
+        client = HttpClient(timeout=2.0)
+        dns_err = urllib.error.URLError(socket.gaierror(8, "nodename nor servname provided, or not known"))
+
+        with patch.object(client._default_opener, "open", side_effect=dns_err), \
+             patch("openrank.client._detect_local_fallback_proxy") as detect_mock:
+            with self.assertRaises(NetworkError):
+                client.get("http://this-domain-does-not-exist-99999.invalid/test")
+            detect_mock.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()
